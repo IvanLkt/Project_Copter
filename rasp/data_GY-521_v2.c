@@ -89,7 +89,8 @@ int main (int argc, char *argv[])
                         accelZ_out = read_value_i2c(fd, 0x3f);
                         accelZ = (double)accelZ_out / 16384.0;
 
-                                
+                        int xAngle =  get_x_rotation(accelX, accelY, accelZ);
+				
                         if(data==-1)
                         {
                                 printf("No data\n");
@@ -98,9 +99,8 @@ int main (int argc, char *argv[])
                         else
                         {
                                 //print data
-                                printf("gyro_x:%lf", accelX);
-                                printf("gyro_y:%lf", accelY);
-                                printf("gyro_z:%lf\n", accelZ);
+
+                                printf("%d\n", xAngle);
 				
                         }
                 }
