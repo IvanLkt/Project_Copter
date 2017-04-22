@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <wiringPi.h>
 #include <wiringPiI2C.h>
+#include <stdint.h>
 
 /* IMU Data */
 int16_t accX;
@@ -27,7 +28,7 @@ int main (int argc, char *argv[])
         {
                 for (;;)
                 {
-                        data=wiringPiI2CRead(fd);
+                        uint8_t* data=wiringPiI2CRead(fd);
                         accX = ((data[0] << 8) | data[1]);
                         accY = ((data[2] << 8) | data[3]);
                         accZ = ((data[4] << 8) | data[5]);
