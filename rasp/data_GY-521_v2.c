@@ -17,15 +17,18 @@ int main (int argc, char *argv[])
 {
         int fd;
         int data;
+        int x;
         wiringPiSetup () ;
-        fd=wiringPiI2CSetup (0x68) ;  /*Use i2cdetect command to find your respective device address*/
+        fd = wiringPiI2CSetup (0x68);  /*Use i2cdetect command to find your respective device address*/
+        reg = wiringPiI2CSetup (0x6c);
         if(fd==-1)
         {
                 printf("Can't setup the I2C device\n");
                 return -1;
         }
         else
-        {
+        {       
+                x = wiringPiI2CWriteReg16(fd, reg, 0);
                 for (;;)
                 {
                         data=wiringPiI2CRead(fd);
