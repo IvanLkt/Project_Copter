@@ -18,6 +18,7 @@ int main (int argc, char *argv[])
         int fd;
         int data;
         int x;
+        int reg;
         wiringPiSetup () ;
         fd = wiringPiI2CSetup (0x68);  /*Use i2cdetect command to find your respective device address*/
         reg = wiringPiI2CSetup (0x6c);
