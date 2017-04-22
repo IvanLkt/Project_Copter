@@ -9,9 +9,9 @@ int16_t tempRaw;
 uint16_t gyroX;
 uint16_t gyroY;
 uint16_t gyroZ;
-uint16_t accelX;
-uint16_t accelY;
-uint16_t accelZ;
+double accelX;
+double accelY;
+double accelZ;
 uint16_t gyroX_out;
 uint16_t gyroY_out;
 uint16_t gyroZ_out;
@@ -43,19 +43,19 @@ int read_value(fd, addres_register)
 
 int dist(int a, int b)
 {
-    return math.sqrt((a*a)+(b*b));
+    return sqrt((a*a)+(b*b));
 }
 
 double get_y_rotation(int x, int y, int z)
 {
-    double radians = math.atan2(x, dist(y,z));
-    return -math.degrees(radians);
+    double radians = atan2(x, dist(y,z));
+    return -1*(180.0/3.14*radians);
 }
 
 double get_x_rotation(int x, int y, int z)
 {
-    double radians = math.atan2(y, dist(x,z));
-    return math.degrees(radians);
+    double radians = atan2(y, dist(x,z));
+    return 180.0/3.14*radians;
 }
 
 int main (int argc, char *argv[])
@@ -82,12 +82,12 @@ int main (int argc, char *argv[])
                         gyroZ_out = read_value_i2c(fd, 0x47);
                         gyroZ = gyroZ_out/131;
                         
-                        accelX_out = read_value_i2c(fd, 0x3b)
-                        accelX = accelX_out / 16384
-                        accelY_out = read_value_i2c(fd ,0x3d)
-                        accelY = accelY_out / 16384
-                        accelZ_out = read_value_i2c(fd, 0x3f)
-                        accelZ = accelZ_out / 16384
+                        accelX_out = read_value_i2c(fd, 0x3b);
+                        accelX = (double)accelX_out / 16384.0;
+                        accelY_out = read_value_i2c(fd ,0x3d);
+                        accelY = (double)accelY_out / 16384.0;
+                        accelZ_out = read_value_i2c(fd, 0x3f);
+                        accelZ = (double)accelZ_out / 16384.0;
 
                                 
                         if(data==-1)
@@ -98,9 +98,10 @@ int main (int argc, char *argv[])
                         else
                         {
                                 //print data
-                                printf("gyro_x:%d", accelX);
-                                printf("gyro_y:%d", accelY);
-                                printf("gyro_z:%d\n", accelZ);
+                                printf("gyro_x:%lf", accelX);
+                                printf("gyro_y:%lf", accelY);
+                                printf("gyro_z:%lf\n", accelZ);
+				
                         }
                 }
         }
