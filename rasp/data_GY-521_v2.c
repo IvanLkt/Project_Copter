@@ -6,14 +6,20 @@
 
 /* IMU Data */
 int16_t tempRaw;
-int16_t gyroX;
-int16_t gyroY;
-int16_t gyroZ;
-int16_t gyroX_out;
-int16_t gyroY_out;
-int16_t gyroZ_out;
+uint16_t gyroX;
+uint16_t gyroY;
+uint16_t gyroZ;
+uint16_t accelX;
+uint16_t accelY;
+uint16_t accelZ;
+uint16_t gyroX_out;
+uint16_t gyroY_out;
+uint16_t gyroZ_out;
+uint16_t accelX_out;
+uint16_t accelY_out;
+uint16_t accelZ_out;
 
-<<<<<<< HEAD
+
 int read_value_i2c(int fd, int addres_register)
 {
     int16_t value = read_value(fd, addres_register);
@@ -34,20 +40,23 @@ int read_value(fd, addres_register)
     int value = (high << 8) + low;
     return value;
 }
-=======
-def read_value_i2c(int addres_register):
-    int value = read_value(addres_register)
-    if (value >= 0x8000):
-        return -((65535 - value) + 1)
-    else:
-        return value
 
-def read_value(addres_register):
-    int high = wiringPiI2CReadReg16(address, addres_register)
-    int low = wiringPiI2CReadReg16(address, addres_register + 1)
-    int value = (high << 8) + low
-    return value
->>>>>>> ca8af0202b65df8f875b4e93e270ee0cf553bf17
+int dist(int a, int b)
+{
+    return math.sqrt((a*a)+(b*b));
+}
+
+double get_y_rotation(int x, int y, int z)
+{
+    double radians = math.atan2(x, dist(y,z));
+    return -math.degrees(radians);
+}
+
+double get_x_rotation(int x, int y, int z)
+{
+    double radians = math.atan2(y, dist(x,z));
+    return math.degrees(radians);
+}
 
 int main (int argc, char *argv[])
 {
@@ -62,25 +71,24 @@ int main (int argc, char *argv[])
         }
         else
         {       
-                wiringPiI2CWriteReg16(fd, 0x6b, 0x00); /*register 107 datasheet -power management*/
+                wiringPiI2CWriteReg16(fd, 0x6b, 0x00); /*register 107 by datasheet -power management*/
                 for (;;)
                 {
                         data=wiringPiI2CRead(fd);
-<<<<<<< HEAD
                         gyroX_out = read_value_i2c(fd, 0x43);
                         gyroX = gyroX_out/131;
                         gyroY_out = read_value_i2c(fd, 0x45);
                         gyroY = gyroY_out/131;
                         gyroZ_out = read_value_i2c(fd, 0x47);
                         gyroZ = gyroZ_out/131;
-=======
-                        gyroX_out = wiringPiI2CReadReg16(fd, 0x43);
-                        gyroX = gyroX_out/16384
-                        gyroY_out = wiringPiI2CReadReg16(fd, 0x45);
-                        gyroY = gyroY_out/16384
-                        gyroZ_out = wiringPiI2CReadReg16(fd, 0x47);
-                        gyroZ = gyroZ_out/16384
->>>>>>> ca8af0202b65df8f875b4e93e270ee0cf553bf17
+                        
+                        accelX_out = read_value_i2c(fd, 0x3b)
+                        accelX = accelX_out / 16384
+                        accelY_out = read_value_i2c(fd ,0x3d)
+                        accelY = accelY_out / 16384
+                        accelZ_out = read_value_i2c(fd, 0x3f)
+                        accelZ = accelZ_out / 16384
+
                                 
                         if(data==-1)
                         {
@@ -90,9 +98,9 @@ int main (int argc, char *argv[])
                         else
                         {
                                 //print data
-                                printf("gyro_x:%d", gyroX);
-                                printf("gyro_y:%d", gyroY);
-                                printf("gyro_z:%d\n", gyroZ);
+                                printf("gyro_x:%d", accelX);
+                                printf("gyro_y:%d", accelY);
+                                printf("gyro_z:%d\n", accelZ);
                         }
                 }
         }
