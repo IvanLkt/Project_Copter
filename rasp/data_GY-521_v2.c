@@ -29,13 +29,10 @@ int main (int argc, char *argv[])
                 for (;;)
                 {
                         uint8_t* data=wiringPiI2CRead(fd);
-                        accX = ((data[0] << 8) | data[1]);
-                        accY = ((data[2] << 8) | data[3]);
-                        accZ = ((data[4] << 8) | data[5]);
-                        tempRaw = ((data[6] << 8) | data[7]);
-                        gyroX = ((data[8] << 8) | data[9]);
-                        gyroY = ((data[10] << 8) | data[11]);
-                        gyroZ = ((data[12] << 8) | data[13]);
+                        gyroX = wiringPiI2CReadReg16(fd, 0x43);
+                        gyroY = wiringPiI2CReadReg16(fd, 0x45);
+                        gyroZ = wiringPiI2CReadReg16(fd, 0x47);
+                                
                         if(data==-1)
                         {
                                 printf("No data\n");
@@ -44,9 +41,9 @@ int main (int argc, char *argv[])
                         else
                         {
                                 //print data
-                                printf("accX=%d\n", accX);
-                                printf("accY=%d\n", accY);
-                                printf("accZ=%d\n", accZ);
+                                printf("gyro_xout: ", gyroX, " scaled: ", (gyroX / 131));
+                                printf("gyro_yout: ", gyroY, " scaled: ", (gyroY / 131));
+                                printf("gyro_zout: ", gyroZ, " scaled: ", (gyroZ / 131));
                         }
                 }
         }
