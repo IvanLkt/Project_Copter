@@ -17,11 +17,9 @@ int main (int argc, char *argv[])
 {
         int fd;
         int data;
-        int x;
         int reg;
         wiringPiSetup () ;
         fd = wiringPiI2CSetup (0x68);  /*Use i2cdetect command to find your respective device address*/
-        reg = wiringPiI2CSetup (0x6c);
         if(fd==-1)
         {
                 printf("Can't setup the I2C device\n");
@@ -29,7 +27,7 @@ int main (int argc, char *argv[])
         }
         else
         {       
-                x = wiringPiI2CWriteReg16(fd, reg, 0);
+                wiringPiI2CWriteReg16(fd, 0x6b, 0x00); /*register 107 datasheet -power management*/
                 for (;;)
                 {
                         data=wiringPiI2CRead(fd);
