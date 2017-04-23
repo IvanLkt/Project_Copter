@@ -102,6 +102,7 @@ int main (int argc, char *argv[])
 
                                 printf("%f", xAngle);
 				printf("accelX_out%f\n",accelX, accelY, accelZ);
+				printf('_________________________________________________________\n');
 				
                         }
                 }
