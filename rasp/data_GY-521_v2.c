@@ -46,7 +46,7 @@ double dist(double a, double b)
     return sqrt((a*a)+(b*b));
 }
 
-double get_y_rotation(int x, int y, int z)
+double get_y_rotation(double x, double y, double z)
 {
     double radians = atan2(x, dist(y,z));
     return -1*(180.0/3.14*radians);
@@ -89,7 +89,8 @@ int main (int argc, char *argv[])
                         accelZ_out = read_value_i2c(fd, 0x3f);
                         accelZ = (double)accelZ_out / 16384.0;
 
-                        double xAngle =  get_x_rotation(accelX, accelY, accelZ);
+                        double X_rotation = get_x_rotation(accelX, accelY, accelZ);
+			double Y_rotation = get_y_rotation(accelX, accelY, accelZ);
 				
                         if(data==-1)
                         {
@@ -100,7 +101,8 @@ int main (int argc, char *argv[])
                         {
                                 //print data
 
-                                printf("%f", xAngle);
+                                printf("X rotation:%f\n", X_rotation);
+				printf("Y rotation:%f\n", Y_rotation);
 				printf("    accelX:%f  ",accelX);
 				printf("    accelY:%f  ",accelY);
 				printf("    accelZ:%f    \n",accelZ);
