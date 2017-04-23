@@ -6,18 +6,18 @@
 
 /* IMU Data */
 int16_t tempRaw;
-uint16_t gyroX;
-uint16_t gyroY;
-uint16_t gyroZ;
+int16_t gyroX;
+int16_t gyroY;
+int16_t gyroZ;
 double accelX;
 double accelY;
 double accelZ;
-uint16_t gyroX_out;
-uint16_t gyroY_out;
-uint16_t gyroZ_out;
-uint16_t accelX_out;
-uint16_t accelY_out;
-uint16_t accelZ_out;
+int16_t gyroX_out;
+int16_t gyroY_out;
+int16_t gyroZ_out;
+int16_t accelX_out;
+int16_t accelY_out;
+int16_t accelZ_out;
 
 
 int read_value_i2c(int fd, int addres_register)
@@ -101,10 +101,17 @@ int main (int argc, char *argv[])
                                 //print data
 
                                 printf("%f", xAngle);
-				printf("accelX_out%f\n",accelX, accelY, accelZ);
-				printf('_________________________________________________________\n');
+				printf("    accelX:%f  ",accelX);
+				printf("    accelY:%f  ",accelY);
+				printf("    accelZ:%f    \n",accelZ);
+				printf("accelX_out:%d    ",accelX_out);
+				printf("     accelY_out%d     ",accelY_out);
+				printf("     accelZ_out%d     \n",accelZ_out);
+
+				printf(" ------------------------------------------------- \n");
 				
                         }
+			delay(1000);
                 }
         }
         return 0;
