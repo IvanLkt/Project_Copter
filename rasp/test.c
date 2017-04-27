@@ -1,23 +1,14 @@
-#include < stdio.h >   //Для printf
-#include < time.h >   //Для time, gmtime, asctime
-
-int main (void)
-{    
-   // Переменная для сохранения текущего системного времени
-   long int s_time;
-   // Указатель, в который будет помещен адрес структуры с 
-   // преобразованным временем
-   struct tm *m_time;
-
-   // Считываем текущее системное время
-   s_time = time (NULL);
-
-   // Преобразуем системное время в локальное
-   m_time  = gmtime (&s_time);
-
-   // С помощью функции asctime преобразуем локальное время в строку
-   // и выводим результат на консоль
-   printf (“Время: %s\n”,asctime (m_time) );
-
-   return 0;
-}
+#include <stdio.h>  
+#include <time.h>  
+ 
+int main ()  
+{  
+  time_t rawtime;  
+  struct tm * timeinfo;  
+ 
+  time ( &rawtime );  
+  timeinfo = localtime ( &rawtime );  
+  printf ( "Текущее время и дата: %s", asctime (timeinfo) );  
+    
+  return 0;  
+} 
