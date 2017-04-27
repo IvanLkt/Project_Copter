@@ -18,14 +18,15 @@ typedef struct {
 typedef struct {
     Point *start = NULL;
     Point *finish = start;
-    int numrecords = 0;
+    int size = 0;
 } Dynamic_array;
 
-void init()
+Dynamic_array* init()
 {
-    Dynamic_array *database = (Dynamic_array *);
-    database.start = NULL;
-    database.finish = database.start;
+    Dynamic_array *database = (Dynamic_array *) malloc(sizeof(Dynamic_array));
+    database->size = 0;
+    database->finish = database->start = NULL;
+    return database;
 }
  
 void add_point (Point *new_point)
