@@ -8,7 +8,7 @@ main () {
   FILE *file;
   file = fopen("input.txt", "r");
   fscanf (file, "%d", &quantity_coordinates);
-  2D_Coordinates Input_Coordinates[quantity_coordinates];
+  2D_Coordinates Input_Coordinates[quantity_coordinates]; //array of coordinates from file
 
   for (int i = 0, i < quantity_coordinates, i++) {
       fscanf (file, "%lf%lf", &(Input_Coordinates[i].x), &(Input_Coordinates[i].y));
