@@ -1,20 +1,21 @@
 #include <stdio.h>
 
 int main () {
-  typedef struct _2D_Coordinates {
+  typedef struct _Ground {
       double x,y;
-  }2D_Coordinates;
+  } Ground; //Coordinates of the control point
   int quantity_coordinates = 0;
   FILE *file;
   file = fopen("input.txt", "r");
   fscanf (file, "%d", &quantity_coordinates);
-  2D_Coordinates Input_Coordinates[quantity_coordinates]; //array of coordinates from file
+  Ground Input_Coordinates[quantity_coordinates]; //array of coordinates from file
 
-  for (int i = 0, i < quantity_coordinates, i++) {
+  for (int i = 0; i < quantity_coordinates; i++) {
       fscanf (file, "%lf%lf", &(Input_Coordinates[i].x), &(Input_Coordinates[i].y));
-      if (fscanf (file, "%lf%lf", &(Input_Coordinates[i].x), &(Input_Coordinates[i].y)) == EOF) {
-        exit(1);
-      }
+      //if (fscanf (file, "%lf%lf", &(Input_Coordinates[i].x), &(Input_Coordinates[i].y)) == EOF) {
+      //return 1; 
+      //}
+  printf("OK, %lf\n",Input_Coordinates[i].x);
   }
-  return 0;
+return 0;
 }
