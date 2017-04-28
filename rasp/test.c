@@ -1,14 +1,14 @@
-#include <stdio.h>  
-#include <time.h>  
- 
-int main ()  
-{  
-  time_t rawtime;  
-  struct tm * timeinfo;  
- 
-  time ( &rawtime );  
-  timeinfo = localtime ( &rawtime );  
-  printf ( "Текущее время и дата: %s", asctime (timeinfo) );  
-    
-  return 0;  
-} 
+#include <stdio.h>
+#include <time.h>
+
+int main ()
+{
+  time_t seconds;
+
+  seconds = time (NULL); // получить текущую дату, выраженную в секундах
+
+  printf('%dcm', seconds/3600 ); //Количество часов, прошедших с 1 января 1970 года
+
+  return 0;
+}
+
