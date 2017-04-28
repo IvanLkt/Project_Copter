@@ -90,7 +90,7 @@ int main (int argc, char *argv[])
                         accelZ = (double)accelZ_out / 16384.0;
 
                         double X_rotation = get_x_rotation(accelX, accelY, accelZ);
-			double Y_rotation = get_y_rotation(accelX, accelY, accelZ);
+                        double Y_rotation = get_y_rotation(accelX, accelY, accelZ);
 				
                         if(data==-1)
                         {
@@ -102,18 +102,17 @@ int main (int argc, char *argv[])
                                 //print data
 
                                 printf("X rotation:%f\n", X_rotation);
-				printf("Y rotation:%f\n", Y_rotation);
-				printf("    accelX:%f  ",accelX);
-				printf("    accelY:%f  ",accelY);
-				printf("    accelZ:%f    \n",accelZ);
-				printf("accelX_out:%d    ",accelX_out);
-				printf("     accelY_out%d     ",accelY_out);
-				printf("     accelZ_out%d     \n",accelZ_out);
-
-				printf(" ------------------------------------------------- \n");
+				                printf("Y rotation:%f\n", Y_rotation);
+                                printf("    accelX:%f  ",accelX);
+                                printf("    accelY:%f  ",accelY);
+                                printf("    accelZ:%f    \n",accelZ);
+                                printf("accelX_out:%d    ",accelX_out);
+                                printf("     accelY_out%d     ",accelY_out);
+                                printf("     accelZ_out%d     \n",accelZ_out);
+                                printf(" ------------------------------------------------- \n");
 				
                         }
-			delay(1000);
+                delay(1000);
                 }
         }
 return 0;
