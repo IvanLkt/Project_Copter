@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-main () {
+int main () {
   typedef struct _2D_Coordinates {
       double x,y;
   }2D_Coordinates;
@@ -16,4 +16,5 @@ main () {
         exit(1);
       }
   }
+  return 0;
 }
