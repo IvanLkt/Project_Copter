@@ -1,5 +1,6 @@
 #include <time.h>
 #include <math.h>
+#include <wiringPi.h>
 
 int main () {
 clock_t tm;
