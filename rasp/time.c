@@ -1,27 +1,20 @@
-#include <stdio.h> //Для printf
-#include <time.h>  //Для clock_gettime
-
-int main (void)
-{  
-   //Структуры для сохранения определенного времени
-   struct timespec mt1, mt2; 
-   //Переменная для расчета дельты времени
-   long int tt;      
-   
-   //Определяем текущее время
-   clock_gettime (CLOCK_REALTIME, &mt1);
-   
-   //Выводим определенное время на экран консоли
-   printf (“Секунды: %ld\n”,mt1.tv_sec);
-   printf (“Наносекунды: %ld\n”,mt1.tv_nsec);
-
-   //Определяем текущее время
-   clock_gettime (CLOCK_REALTIME, &mt2);
-
-   //Рассчитываем разницу времени между двумя измерениями
-   tt=1000000000*(mt2.tv_sec - mt1.tv_sec)+(mt2.tv_nsec - mt1.tv_nsec);
-
-   //Выводим результат расчета на экран
-   printf (“Затрачено время: %ld нс\n”,tt);
-
-   return 0;
+#include <sys/time.h>
+struct timeval tv1, tv2, dtv;
+struct timezone tz;
+//функция для начала замера времени, сохраняющая в переменной tv1 время начала измерений
+void time_start() 
+{ gettimeofday(&tv1, &tz); }
+//функция для окончания замера времени, возвращающая количество миллисекунд, прошедших с начала замера времени
+long time_stop()
+{ gettimeofday(&tv2, &tz);
+  dtv.tv_sec= tv2.tv_sec  - tv1.tv_sec;	//разница секунд
+  dtv.tv_usec=tv2.tv_usec - tv1.tv_usec;	//разница микросекунд
+  if (dtv.tv_usec<0) { dtv.tv_sec--; dtv.tv_usec+=1000000; }
+  //возвращение количества прошедших миллисекунд
+  return dtv.tv_sec*1000 + dtv.tv_usec/1000;  
+}
+int main {
+   time_start();
+   delay(500);
+   long o = time_stop();
+   printf("%lf", o);
