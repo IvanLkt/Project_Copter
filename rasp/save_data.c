@@ -2,27 +2,30 @@
 #include <math.h>
 #include <stdlib.h>
 #include <malloc.h>
+#include <stdbool.h>
 
 clock_t start, current_time;
 double speed;
 bool status_of_flight;
 
-typedef struct _Coordinates {
+typedef struct Coordinates {
     double x, y;
     int z;
 } Coordinates;
 
-typedef struct _Point{
-    Coordinates data;
-    _Point *next;
-    _Point *prev;
+
+typedef struct Point{
+    struct Coordinates data;
+    struct Point *next;
+    struct Point *prev;
 } Point;
 
-typedef struct _Dynamic_array{
-    Point *head = NULL;
-    Point *tail = head;
-    int size = 0;
+typedef struct Dynamic_array{
+    struct Point *head;
+    struct Point *tail;
+    int size;
 } Dynamic_array;
+
 
 Dynamic_array* init()
 {
@@ -38,9 +41,9 @@ void add_point (Dynamic_array* database, double x, double y, int z)
     if (tmp == NULL) {
         exit(1);
     }
-    tmp->data->x = x;
-    tmp->data->y = y;
-    tmp->data->z = z;
+    tmp->data.x = x;
+    tmp->data.y = y;
+    tmp->data.z = z;
     tmp->next = NULL;
     tmp->prev = database->tail;
     if (database->head == NULL) {
@@ -50,7 +53,7 @@ void add_point (Dynamic_array* database, double x, double y, int z)
         database->tail = tmp;
     }
     if (database->tail) {
-        database->tail->next = tmp;
+        database->tail->next = tmp;  
     }
     database->tail = tmp;
     database->size++;
