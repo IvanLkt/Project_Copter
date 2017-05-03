@@ -6,7 +6,7 @@ int main(void)
 {
   time_t timer = time(NULL);
   printf("%d\n", timer);
-  unsigned long timer2;
+  uint32_t timer2;
   timer2 = millis();
   printf("%d\n", timer2);
   return 0;
