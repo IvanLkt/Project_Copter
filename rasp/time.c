@@ -8,7 +8,7 @@ int main(void)
   printf("%d\n", timer);
   unsigned long timer2;
   timer2 = millis();
-  printf("%d\n", delta_us);
+  printf("%d\n", timer2);
   return 0;
 }
 
