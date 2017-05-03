@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <wiringPi.h>
+#include <stdint.h>
 
 int main(void)
 {
