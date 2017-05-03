@@ -4,7 +4,7 @@
 int main(void)
 {
   time_t timer = time(NULL);
-  printf("%s\n", timer);
+  printf("%d\n", timer);
   return 0;
 }
 
