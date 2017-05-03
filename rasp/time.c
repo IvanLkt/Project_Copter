@@ -4,11 +4,11 @@
 
 int main () {
 clock_t tm;
-for (int i = 0; i<1000; i++)
+for (int i = 0; i<10000; i++)
 {
   printf("%d \n", i);
 }
-delay(3000);
+//delay(3000);
 tm = clock();
 long k = tm*1000/CLOCKS_PER_SEC;
 printf("%ld \n", k);
