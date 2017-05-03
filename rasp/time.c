@@ -4,7 +4,7 @@
 
 int main () {
 clock_t tm;
-for (int i = 0; i<10000; i++)
+for (int i = 0; i<100000; i++)
 {
   printf("%d \n", i);
 }
