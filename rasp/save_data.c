@@ -13,7 +13,6 @@ typedef struct Coordinates {
     int z;
 } Coordinates;
 
-
 typedef struct Point{
     struct Coordinates data;
     struct Point *next;
@@ -25,6 +24,18 @@ typedef struct Dynamic_array{
     struct Point *tail;
     int size;
 } Dynamic_array;
+
+typedef struct Array_of_Angles{
+    struct Angle *head;
+    struct Angle *tail;
+    int size;
+} Array_of_Angles;
+
+typedef struct Angle{
+    struct Angle *next;
+    struct Angle *prev;
+    int angle;
+}Angle;
 
 
 Dynamic_array* init()
@@ -59,7 +70,47 @@ void add_point (Dynamic_array* database, double x, double y, int z)
     database->size++;
 }
 
+Array_of_Angles* init()
+{
+    Array_of_Angles *database_angles = (Array_of_Angles *) malloc(sizeof(Array_of_Angles));
+    database_angles->tail = database_angles->head = NULL;
+    database_angles->size = 0;
+    return database_angles;
+}
 
+void add_angle(Array_of_Angles *database_angles, int angle)
+{
+    Angle *tmp = (Angle*) malloc(sizeof(Angle));
+    if (tmp == NULL) {
+        exit (1);
+    }
+    tmp->angle = angle;
+    tmp->next = NULL;
+    tmp->prev = database_angles->tail
+    if (database_angle->head == NULL) {
+        database_angle->head = tmp;
+    }
+    if (database_angle->tail == NULL) {
+        database_angle->tail = tmp;
+    }
+    if (database_angle->tail) {
+        database_angle->tail->next = tmp;  
+    }
+    database_angle->tail = tmp;
+    database_angle->size++;
+}
+
+void delete_Angle(Array_of_Angles *database_angles)
+{
+    Angle *tmp = database_angles->head;
+    if (tmp == NULL){
+        exut(1);
+    }
+    database_angles->head = tmp->next;
+    free(tmp);
+    tmp =NULL;
+    database_angles->size--;
+}
 
 int main()
 {
