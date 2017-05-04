@@ -87,17 +87,17 @@ void add_angle(Array_of_Angles *database_angles, int angle)
     tmp->angle = angle;
     tmp->next = NULL;
     tmp->prev = database_angles->tail
-    if (database_angle->head == NULL) {
-        database_angle->head = tmp;
+    if (database_angles->head == NULL) {
+        database_angles->head = tmp;
     }
-    if (database_angle->tail == NULL) {
-        database_angle->tail = tmp;
+    if (database_angles->tail == NULL) {
+        database_angles->tail = tmp;
     }
-    if (database_angle->tail) {
-        database_angle->tail->next = tmp;  
+    if (database_angles->tail) {
+        database_angles->tail->next = tmp;  
     }
-    database_angle->tail = tmp;
-    database_angle->size++;
+    database_angles->tail = tmp;
+    database_angles->size++;
 }
 
 void delete_Angle(Array_of_Angles *database_angles)
