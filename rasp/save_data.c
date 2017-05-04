@@ -38,7 +38,7 @@ typedef struct Angle{
 }Angle;
 
 
-Dynamic_array* init()
+Dynamic_array* init_database_point()
 {
     Dynamic_array *database = (Dynamic_array *) malloc(sizeof(Dynamic_array));
     database->size = 0;
@@ -70,7 +70,7 @@ void add_point (Dynamic_array* database, double x, double y, int z)
     database->size++;
 }
 
-Array_of_Angles* init()
+Array_of_Angles* init_database_angles()
 {
     Array_of_Angles *database_angles = (Array_of_Angles *) malloc(sizeof(Array_of_Angles));
     database_angles->tail = database_angles->head = NULL;
@@ -86,7 +86,7 @@ void add_angle(Array_of_Angles *database_angles, int angle)
     }
     tmp->angle = angle;
     tmp->next = NULL;
-    tmp->prev = database_angles->tail
+    tmp->prev = database_angles->tail;
     if (database_angles->head == NULL) {
         database_angles->head = tmp;
     }
