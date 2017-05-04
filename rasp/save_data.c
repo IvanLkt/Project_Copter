@@ -104,7 +104,7 @@ void delete_Angle(Array_of_Angles *database_angles)
 {
     Angle *tmp = database_angles->head;
     if (tmp == NULL){
-        exut(1);
+        exit(1);
     }
     database_angles->head = tmp->next;
     free(tmp);
