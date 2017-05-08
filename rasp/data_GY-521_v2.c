@@ -109,9 +109,9 @@ int main (int argc, char *argv[])
                                 printf("accelX_out:%d    ",accelX_out);
                                 printf("     accelY_out%d     ",accelY_out);
                                 printf("     accelZ_out%d     \n",accelZ_out);
-				printf("    gyroX:%d  ",gyroX);
-				printf("    gyroY:%d  ",gyroY);
-				printf("    gyroZ:%d  \n",gyroZ);
+				printf("    gyroX:%d  ",gyroX_out);
+				printf("    gyroY:%d  ",gyroY_out);
+				printf("    gyroZ:%d  \n",gyroZ_out);
                                 printf(" ------------------------------------------------- \n");
 				
                         }
