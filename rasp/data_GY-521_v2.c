@@ -111,7 +111,7 @@ int main (int argc, char *argv[])
                                 printf("     accelZ_out%d     \n",accelZ_out);
 				printf("    gyroX:%f  ",gyroX);
 				printf("    gyroY:%f  ",gyroY);
-				printf("    gyroZ:%f  ",gyroZ);
+				printf("    gyroZ:%f  \n",gyroZ);
                                 printf(" ------------------------------------------------- \n");
 				
                         }
