@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <math.h>
 
-int line = 0;
+int line = 0; //number of line in input file
+
 
 int main () {
   typedef struct Ground {
