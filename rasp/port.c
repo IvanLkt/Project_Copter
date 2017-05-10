@@ -11,6 +11,7 @@ void setup() {
 }
 
 int main(void) {
+  setup();
   if (digitalRead(COPT) == LOW) {
   printf ("LOW");
   }
