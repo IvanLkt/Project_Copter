@@ -12,7 +12,9 @@ int line = 0; //number of line in input file
 int quantity_coordinates = 0; //quantity of coordinates in input file
 clock_t real_time_clocks, start_line_time_clocks;
 long real_time;
-bool  status_of_flight;
+long start_line_time;
+bool status_of_flight;
+bool status_of_turn; // 0 not turn; 1 - turn
 double U = 1.0;
 
 /* IMU Data */
@@ -29,7 +31,6 @@ int16_t gyroZ_out;
 int16_t accelX_out;
 int16_t accelY_out;
 int16_t accelZ_out;
-int fd;
 int data_MPU;
 
 typedef struct Ground {
@@ -76,10 +77,10 @@ double speed (Groung *Input_Coordinates, U){
     return U/k; //U - copter's speed
 }
 
-void get_coordinate (Groung *Input_Coordinates, long *real_time, long *start_line_time, double U, double *X, double *Y){
+void get_coordinate (Groung *Input_Coordinates, long real_time, long start_line_time, double U, double *X, double *Y){
     double x, y; // local variables
-    x = Input_Coordinates[2*line-2]->x + (Input_Coordinates[2*line-1]->x - Input_Coordinates[2*line-2]->x)*(*real_time - *start_line_time)*speed(Input_Coordinates, U)*(sqrt((Input_Coordinates[2*line-1]->x - Input_Coordinates[2*line-2]->x)^2 + (Input_Coordinates[2*line-1]->y - Input_Coordinates[2*line-2]->y)^2))^(-1);
-    y = Input_Coordinates[2*line-2]->y + (Input_Coordinates[2*line-1]->y - Input_Coordinates[2*line-2]->y)*(*real_time - *start_line_time)*speed(Input_Coordinates, U)*(sqrt((Input_Coordinates[2*line-1]->x - Input_Coordinates[2*line-2]->x)^2 + (Input_Coordinates[2*line-1]->y - Input_Coordinates[2*line-2]->y)^2))^(-1);
+    x = Input_Coordinates[2*line-2]->x + (Input_Coordinates[2*line-1]->x - Input_Coordinates[2*line-2]->x)*(real_time - start_line_time)*speed(Input_Coordinates, U)*(sqrt((Input_Coordinates[2*line-1]->x - Input_Coordinates[2*line-2]->x)^2 + (Input_Coordinates[2*line-1]->y - Input_Coordinates[2*line-2]->y)^2))^(-1);
+    y = Input_Coordinates[2*line-2]->y + (Input_Coordinates[2*line-1]->y - Input_Coordinates[2*line-2]->y)*(real_time - start_line_time)*speed(Input_Coordinates, U)*(sqrt((Input_Coordinates[2*line-1]->x - Input_Coordinates[2*line-2]->x)^2 + (Input_Coordinates[2*line-1]->y - Input_Coordinates[2*line-2]->y)^2))^(-1);
     *X = x; // Link to an external variable
     *Y = y;
 }
@@ -211,23 +212,6 @@ int read_value(fd, addres_register)
     return value;
 }
 
-double dist(double a, double b)
-{
-    return sqrt((a*a)+(b*b));
-}
-
-double get_y_rotation(double x, double y, double z)
-{
-    double radians = atan2(x, dist(y,z));
-    return -1*(180.0/3.14*radians);
-}
-
-double get_x_rotation(double x, double y, double z)
-{
-    double radians = atan2(y, dist(x,z));
-    return 180.0/3.14*radians;
-}
-
 void get_data_from_MPU () {
     wiringPiI2CWriteReg16(fd, 0x6b, 0x00); /*register 107 by datasheet -power management*/
     for (;;) {
@@ -256,6 +240,40 @@ void get_data_from_MPU () {
     }
 }
 
+void check_turn(Array_of_Angles *database_angles) {
+    int tmp_turn = 0;
+    for (int i=0; i<5; i++) {
+       Angle *tmp = getNth(database_angles, i);
+        if (tmp->angle > .....) {
+            tmp_turn ++;
+        }
+    }
+    if (status_of_turn == false) {
+        if (tmp_turn == 5) {
+            status_of_turn = true; //now short line
+            line = (-1)*line;
+        }
+    }
+    if (status_of_turn == true) {
+        if (tmp_turn == 0) {
+            status_of_turn = false; //now long line
+            line = (-1)*line + 1;
+            start_line_time_clocks = clock();
+            start_line_time = start_line_time_clocks * 1000 / CLOCKS_PER_SEC;
+        }
+    }
+}
+
+Angle* getNth(Array_of_Angles *database_angles, int index) {
+    Angle *tmp = database_angles->head;
+    int i = 0;
+    while (tmp && i < index) {
+        tmp = tmp->next;
+        i++;
+    }
+    return tmp;
+}
+
 int main (int argc, char *argv[]) {
     FILE *file;
     file = fopen("input.txt", "r");
@@ -270,7 +288,7 @@ int main (int argc, char *argv[]) {
     Dynamic_array *database = init_database_point();
     Array_of_Angles *database_angles =  init_database_angles();
 
-
+    int fd;
     wiringPiSetup () ;
     fd = wiringPiI2CSetup (0x68);  /*Use i2c detect command to find your respective device address*/
     if(fd==-1) {
@@ -280,15 +298,26 @@ int main (int argc, char *argv[]) {
 
     if (...........){
         setup_HCSR04();
-        status_of_flight = 1;
+        status_of_flight = true;
         line = 1;
-        while (status_of_flight == 1) {
+        while (status_of_flight == true) {
+            get_data_from_MPU();
+            add_angle(*database_angles, ......);
+            if (database_angles->size > 5) {
+                delete_Angle(*database_angles);
+            }
+            check_turn(database_angles);
             if (line > 0) {
                 real_time_clocks = clock();
-                real_time = real_time * 1000 / CLOCKS_PER_SEC;
+                real_time = real_time_clocks * 1000 / CLOCKS_PER_SEC;
+                int alt = getCM();
+                double *X;
+                double *Y;
+                get_coordinate(Input_Coordinates, real_time, start_line_time, U, X, Y);
+                add_point(database, *X, *Y, alt);
             }
-            if (line == -1) {
-
+            if (......) {
+                status_of_flight = false;
             }
         }
     }
