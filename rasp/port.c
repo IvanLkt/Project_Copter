@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <wiringPi.h>
 
-#define COPT 4
+#define COPT 7
 
 
 void setup() {
