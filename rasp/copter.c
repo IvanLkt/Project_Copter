@@ -280,7 +280,7 @@ void setup_port() {
 int main (int argc, char *argv[]) {
     setup_port();
     while (digitalRead(START) == LOW);
-
+    printf ("START_SETUP\n");
     FILE *file;
     file = fopen("input.txt", "r");
     fscanf (file, "%d", &quantity_coordinates);
@@ -299,7 +299,8 @@ int main (int argc, char *argv[]) {
         printf("Can't setup the I2C device\n");
         return -1;
     }
-
+    printf ("FINISH_SETUP\n");
+    
     while (digitalRead(COPT) == LOW);
 
     if (digitalRead(COPT) == HIGH){
