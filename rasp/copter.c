@@ -168,7 +168,6 @@ void delete_Angle(Array_of_Angles *database_angles)
 
 /*Data from HC-SR04*/
 void setup_HCSR04() {
-    wiringPiSetup();
     pinMode(TRIG, OUTPUT);
     pinMode(ECHO, INPUT);
 
@@ -198,6 +197,14 @@ int getCM() {
 }
 
 /*Data from GY-521*/
+int read_value(int fd, int addres_register)
+{
+    int high = wiringPiI2CReadReg16(fd, addres_register);
+    int low = wiringPiI2CReadReg16(fd, addres_register + 1);
+    int value = (high << 8) + low;
+    return value;
+}
+
 int read_value_i2c(int fd, int addres_register)
 {
     int value = read_value(fd, addres_register);
@@ -211,13 +218,6 @@ int read_value_i2c(int fd, int addres_register)
     }
 }
 
-int read_value(int fd, int addres_register)
-{
-    int high = wiringPiI2CReadReg16(fd, addres_register);
-    int low = wiringPiI2CReadReg16(fd, addres_register + 1);
-    int value = (high << 8) + low;
-    return value;
-}
 
 void get_data_from_MPU () {
     wiringPiI2CWriteReg16(fd, 0x6b, 0x00); /*register 107 by datasheet -power management*/
@@ -293,7 +293,6 @@ int main (int argc, char *argv[]) {
     Dynamic_array *database = init_database_point();
     Array_of_Angles *database_angles =  init_database_angles();
 
-    wiringPiSetup () ;
     fd = wiringPiI2CSetup (0x68);  /*Use i2c detect command to find your respective device address*/
     if(fd==-1) {
         printf("Can't setup the I2C device\n");
