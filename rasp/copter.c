@@ -84,7 +84,7 @@ double speed (Ground *Input_Coordinates){
     printf("POINT_13\n");
     printf("%lf\n",fabs(y_2-y_1));
     k = (40074000/360)*sin(atan(fabs(y_2-y_1)/fabs(x_2-x_1)))+(40074000/360)*cos(x_1)*cos(atan(fabs(y_2-y_1)/fabs(x_2-x_1))); // (metr/derges)
-    printf("POINT_14");
+    printf("POINT_14\n");
     return U/k; //U - copter's speed
 }
 
@@ -92,11 +92,12 @@ void get_coordinate (Ground *Input_Coordinates, long real_time, long start_line_
     double x, y; // local variables
     printf("%d\n", line);
     printf("%lf\n", Input_Coordinates[2*line-2].x);
-    //speed(Input_Coordinates);
+
     x = Input_Coordinates[2*line-2].x + (Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x)*(real_time - start_line_time)*speed(Input_Coordinates)*pow(sqrt(pow(Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x, 2) + pow(Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y, 2)), (-1));
     y = Input_Coordinates[2*line-2].y + (Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y)*(real_time - start_line_time)*speed(Input_Coordinates)*pow(sqrt(pow(Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x, 2) + pow(Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y, 2)), (-1));
     printf("POINT_12\n");
     *X = x; // Link to an external variable
+    printf("POINT_16\n");
     *Y = y;
 }
 
