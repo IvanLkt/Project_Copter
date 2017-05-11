@@ -239,10 +239,15 @@ void get_data_from_MPU () {
     }
 }
 
+
 void check_turn(Array_of_Angles *database_angles) {
     int tmp_turn = 0;
     for (int i=0; i<5; i++) {
-        Angle *tmp = getNth(database_angles, i);
+        int j = 0;
+        while (j < i) {
+            tmp = tmp->next;
+            j++;
+        }
         int turn = abs(tmp->angle + 450); // defolt -452
         if (turn> 600) {
             tmp_turn ++;
@@ -264,15 +269,6 @@ void check_turn(Array_of_Angles *database_angles) {
     }
 }
 
-Angle* getNth(Array_of_Angles *database_angles, int index) {
-    Angle *tmp = database_angles->head;
-    int i = 0;
-    while (tmp && i < index) {
-        tmp = tmp->next;
-        i++;
-    }
-    return tmp;
-}
 
 void setup_port() {
     wiringPiSetup();
