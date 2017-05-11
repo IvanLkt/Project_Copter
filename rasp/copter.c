@@ -331,16 +331,17 @@ int main (int argc, char *argv[]) {
                 double *Y;
                 printf("POINT_6\n");
                 get_coordinate(Input_Coordinates, real_time, start_line_time, U, X, Y);
-                add_point(database, *X, *Y, alt);
                 printf("POINT_7\n");
+                add_point(database, *X, *Y, alt);
+                printf("POINT_8\n");
             }
             if (digitalRead(COPT) == LOW && start_time - real_time > 500) {
                 status_of_flight = false;
-                printf("POINT_8\n");
+                printf("POINT_9\n");
             }
         }
     }
-    printf("POINT_7\n");
+    printf("POINT_10\n");
     FILE *output_data;
     output_data = fopen ("output_data.txt", "w");
     Point *tmp = database->head;
