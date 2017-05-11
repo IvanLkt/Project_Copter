@@ -74,7 +74,7 @@ typedef struct Angle{
 }Angle;
 
 
-double speed (Ground *Input_Coordinates, U){
+double speed (Ground *Input_Coordinates, double U){
     double x_1 = Input_Coordinates[0]->x; //широта
     double y_1 = Input_Coordinates[0]->y; //долгота
     double x_2 = Input_Coordinates[1]->x; //широта
@@ -317,9 +317,9 @@ int main (int argc, char *argv[]) {
         line = 1;
         while (status_of_flight == true) {
             get_data_from_MPU();
-            add_angle(*database_angles, gyroX);
+            add_angle(database_angles, gyroX);
             if (database_angles->size > 5) {
-                delete_Angle(*database_angles);
+                delete_Angle(database_angles);
             }
             check_turn(database_angles);
             if (line > 0) {
