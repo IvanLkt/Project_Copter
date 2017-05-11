@@ -75,31 +75,22 @@ typedef struct Angle{
 
 
 double speed (Ground *Input_Coordinates){
-    printf("POINT_15\n");
     double x_1 = Input_Coordinates[0].x; //широта
     double y_1 = Input_Coordinates[0].y; //долгота
     double x_2 = Input_Coordinates[1].x; //широта
     double y_2 = Input_Coordinates[1].y; //долгота
     double k =0; //coefficient
-    printf("POINT_13\n");
-    printf("%lf\n",fabs(y_2-y_1));
     double dist_metr = pow(pow((40074000/360)*fabs(y_2 - y_1)*cos(fabs((x_1 + x_2)/2)), 2) + pow(fabs(x_2 - x_1)*(40074000/360), 2), 0.5);
     double dist_deg = pow(pow(y_2 - y_1, 2) + pow(x_2 - x_1, 2), 0.5);
-    k =dist_metr/dist_deg;// (metr/derges)
-    printf("POINT_14\n");
+    k = dist_metr/dist_deg;// (metr/derges)
     return U/k; //U - copter's speed
 }
 
 void get_coordinate (Ground *Input_Coordinates, long real_time, long start_line_time, double *X, double *Y){
     double x, y; // local variables
-    printf("%d\n", line);
-    printf("%lf\n", Input_Coordinates[2*line-2].x);
-
     x = Input_Coordinates[2*line-2].x + (Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x)*(real_time - start_line_time)*speed(Input_Coordinates)*pow(sqrt(pow(Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x, 2) + pow(Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y, 2)), (-1));
     y = Input_Coordinates[2*line-2].y + (Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y)*(real_time - start_line_time)*speed(Input_Coordinates)*pow(sqrt(pow(Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x, 2) + pow(Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y, 2)), (-1));
-    printf("POINT_12\n");
     *X = x; // Link to an external variable
-    printf("POINT_16\n");
     *Y = y;
 }
 
@@ -232,9 +223,7 @@ int read_value_i2c(int fd, int addres_register)
 
 void get_data_from_MPU () {
     wiringPiI2CWriteReg16(fd, 0x6b, 0x00); /*register 107 by datasheet -power management*/
-    printf("POWER_MPU_ON\n");
         data_MPU = wiringPiI2CRead(fd);
-        printf("DATA_MPU_ON\n");
         gyroX_out = read_value_i2c(fd, 0x43);
         gyroX = gyroX_out / 131;
         gyroY_out = read_value_i2c(fd, 0x45);
@@ -322,37 +311,27 @@ int main (int argc, char *argv[]) {
         status_of_flight = true;
         line = 1;
         start_line_time = real_time;
-        printf("POINT_1\n");
         while (status_of_flight == true) {
             get_data_from_MPU();
-            printf("MPU_OK\n");
+            printf("gyro%d:  \n", gyroX);
             add_angle(database_angles, gyroX);
-            printf("POINT_2\n");
             if (database_angles->size > 5) {
                 delete_Angle(database_angles);
             }
             check_turn(database_angles);
-            printf("POINT_3\n");
             if (line > 0) {
-                printf("POINT_4\n");
                 real_time_clocks = clock();
                 real_time = real_time_clocks * 1000 / CLOCKS_PER_SEC;
-                printf("POINT_5\n");
                 int alt = getCM();
                 double X, Y;
-                printf("POINT_6\n");
                 get_coordinate(Input_Coordinates, real_time, start_line_time, &X, &Y);
-                printf("POINT_7\n");
                 add_point(database, X, Y, alt);
-                printf("POINT_8\n");
             }
             if (digitalRead(COPT) == LOW && start_time - real_time > 500) {
                 status_of_flight = false;
-                printf("POINT_9\n");
             }
         }
     }
-    printf("POINT_10\n");
     FILE *output_data;
     output_data = fopen ("output_data.txt", "w");
     Point *tmp = database->head;
@@ -360,4 +339,5 @@ int main (int argc, char *argv[]) {
         fprintf(output_data, "%lf      %lf      %d\n", tmp->data.x, tmp->data.y, tmp->data.z);
         tmp = tmp->next;
     }
+    printf("STOP\n");
 }
