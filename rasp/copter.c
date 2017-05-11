@@ -200,7 +200,7 @@ int getCM() {
 /*Data from GY-521*/
 int read_value_i2c(int fd, int addres_register)
 {
-    int16_t value = read_value(fd, addres_register);
+    value = read_value(fd, addres_register);
     if (value >= 0x8000)
     {
         return -((65535 - value) + 1);
@@ -236,10 +236,6 @@ void get_data_from_MPU () {
         accelY = (double) accelY_out / 16384.0;
         accelZ_out = read_value_i2c(fd, 0x3f);
         accelZ = (double) accelZ_out / 16384.0;
-
-        double X_rotation = get_x_rotation(accelX, accelY, accelZ);
-        double Y_rotation = get_y_rotation(accelX, accelY, accelZ);
-
     }
 }
 
