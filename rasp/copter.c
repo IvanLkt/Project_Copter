@@ -337,12 +337,11 @@ int main (int argc, char *argv[]) {
                 real_time = real_time_clocks * 1000 / CLOCKS_PER_SEC;
                 printf("POINT_5\n");
                 int alt = getCM();
-                double *X;
-                double *Y;
+                double X, Y;
                 printf("POINT_6\n");
-                get_coordinate(Input_Coordinates, real_time, start_line_time, X, Y);
+                get_coordinate(Input_Coordinates, real_time, start_line_time, &X, &Y);
                 printf("POINT_7\n");
-                add_point(database, *X, *Y, alt);
+                add_point(database, X, Y, alt);
                 printf("POINT_8\n");
             }
             if (digitalRead(COPT) == LOW && start_time - real_time > 500) {
