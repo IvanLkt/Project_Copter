@@ -207,7 +207,7 @@ int read_value(int fd, int addres_register)
 
 int read_value_i2c(int fd, int addres_register)
 {
-    int value = read_value(fd, addres_register);
+    int16_t value = read_value(fd, addres_register);
     if (value >= 0x8000)
     {
         return -((65535 - value) + 1);
