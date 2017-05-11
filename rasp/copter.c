@@ -83,7 +83,9 @@ double speed (Ground *Input_Coordinates){
     double k =0; //coefficient
     printf("POINT_13\n");
     printf("%lf\n",fabs(y_2-y_1));
-    k = (40074000/360)*sin(atan(fabs(y_2-y_1)/fabs(x_2-x_1)))+(40074000/360)*cos(x_1)*cos(atan(fabs(y_2-y_1)/fabs(x_2-x_1))); // (metr/derges)
+    double dist_metr = pow(pow((40074000/360)*fabs(y_2 - y_1)*cos(fabs((x_1 + x_2)/2)), 2) + pow(fabs(x_2 - x_1)*(40074000/360), 2), 0.5);
+    double dist_deg = pow(pow(y_2 - y_1, 2) + pow(x_2 - x_1, 2), 0.5);
+    double k =dist_metr/dist_deg;// (metr/derges)
     printf("POINT_14\n");
     return U/k; //U - copter's speed
 }
