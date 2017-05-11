@@ -83,6 +83,7 @@ double speed (Ground *Input_Coordinates){
     double k =0; //coefficient
     printf("POINT_13\n");
     k = (40074000/360)*sin(atan(abs(y_2-y_1)/abs(x_2-x_1)))+(40074000/360)*cos(x_1)*cos(atan(abs(y_2-y_1)/abs(x_2-x_1))); // (metr/derges)
+    printf("POINT_14");
     return U/k; //U - copter's speed
 }
 
