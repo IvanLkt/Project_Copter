@@ -311,6 +311,7 @@ int main (int argc, char *argv[]) {
         start_time = start_time_clocks * 1000 / CLOCKS_PER_SEC;
         status_of_flight = true;
         line = 1;
+        printf("POINT_1\n");
         while (status_of_flight == true) {
             get_data_from_MPU();
             add_angle(database_angles, gyroX);
@@ -326,13 +327,14 @@ int main (int argc, char *argv[]) {
                 double *Y;
                 get_coordinate(Input_Coordinates, real_time, start_line_time, U, X, Y);
                 add_point(database, *X, *Y, alt);
+                printf("POINT_2\n");
             }
-            if (digitalRead(COPT) == LOW && start_time - real_time > 5000) {
+            if (digitalRead(COPT) == LOW && start_time - real_time > 500) {
                 status_of_flight = false;
             }
         }
     }
-
+    printf("POINT_3\n");
     FILE *output_data;
     output_data = fopen ("output_data.txt", "w");
     Point *tmp = database->head;
