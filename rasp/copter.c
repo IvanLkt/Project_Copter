@@ -75,10 +75,10 @@ typedef struct Angle{
 
 
 double speed (Ground *Input_Coordinates, double U){
-    double x_1 = Input_Coordinates[0]->x; //широта
-    double y_1 = Input_Coordinates[0]->y; //долгота
-    double x_2 = Input_Coordinates[1]->x; //широта
-    double y_2 = Input_Coordinates[1]->y; //долгота
+    double x_1 = Input_Coordinates[0].x; //широта
+    double y_1 = Input_Coordinates[0].y; //долгота
+    double x_2 = Input_Coordinates[1].x; //широта
+    double y_2 = Input_Coordinates[1].y; //долгота
     double k =0; //coefficient
     k = (40074000/360)*sin(arctg(abs(y_2-y_1)/abs(x_2-x_1)))+(40074000/360)*cos(x_1)*cos(arctg(abs(y_2-y_1)/abs(x_2-x_1))); // (metr/derges)
     return U/k; //U - copter's speed
@@ -86,8 +86,8 @@ double speed (Ground *Input_Coordinates, double U){
 
 void get_coordinate (Ground *Input_Coordinates, long real_time, long start_line_time, double U, double *X, double *Y){
     double x, y; // local variables
-    x = Input_Coordinates[2*line-2].x + (Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x)*(real_time - start_line_time)*speed(Input_Coordinates, U)*(sqrt((Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x)^2 + (Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y)^2))^(-1);
-    y = Input_Coordinates[2*line-2].y + (Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y)*(real_time - start_line_time)*speed(Input_Coordinates, U)*(sqrt((Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x)^2 + (Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y)^2))^(-1);
+    x = Input_Coordinates[2*line-2].x + (Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x)*(real_time - start_line_time)*speed(Input_Coordinates, U)*pow(sqrt(pow(Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x, 2) + pow(Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y, 2)), (-1));
+    y = Input_Coordinates[2*line-2].y + (Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y)*(real_time - start_line_time)*speed(Input_Coordinates, U)*pow(sqrt(pow(Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x, 2) + pow(Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y, 2)), (-1));
     *X = x; // Link to an external variable
     *Y = y;
 }
