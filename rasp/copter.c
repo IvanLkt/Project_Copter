@@ -22,6 +22,7 @@ long start_time;
 bool status_of_flight;
 bool status_of_turn; // 0 not turn; 1 - turn
 double U = 1.0;
+int fd;
 
 /* IMU Data */
 int16_t tempRaw;
@@ -85,8 +86,8 @@ double speed (Ground *Input_Coordinates, U){
 
 void get_coordinate (Ground *Input_Coordinates, long real_time, long start_line_time, double U, double *X, double *Y){
     double x, y; // local variables
-    x = Input_Coordinates[2*line-2].x + (Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x)*(real_time - start_line_time)*speed(Input_Coordinates, U)*(sqrt((Input_Coordinates[2*line-1]->x - Input_Coordinates[2*line-2]->x)^2 + (Input_Coordinates[2*line-1]->y - Input_Coordinates[2*line-2]->y)^2))^(-1);
-    y = Input_Coordinates[2*line-2].y + (Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y)*(real_time - start_line_time)*speed(Input_Coordinates, U)*(sqrt((Input_Coordinates[2*line-1]->x - Input_Coordinates[2*line-2]->x)^2 + (Input_Coordinates[2*line-1]->y - Input_Coordinates[2*line-2]->y)^2))^(-1);
+    x = Input_Coordinates[2*line-2].x + (Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x)*(real_time - start_line_time)*speed(Input_Coordinates, U)*(sqrt((Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x)^2 + (Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y)^2))^(-1);
+    y = Input_Coordinates[2*line-2].y + (Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y)*(real_time - start_line_time)*speed(Input_Coordinates, U)*(sqrt((Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x)^2 + (Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y)^2))^(-1);
     *X = x; // Link to an external variable
     *Y = y;
 }
@@ -210,7 +211,7 @@ int read_value_i2c(int fd, int addres_register)
     }
 }
 
-int read_value(int fd, addres_register)
+int read_value(int fd, int addres_register)
 {
     int high = wiringPiI2CReadReg16(fd, addres_register);
     int low = wiringPiI2CReadReg16(fd, addres_register + 1);
@@ -239,10 +240,6 @@ void get_data_from_MPU () {
         double X_rotation = get_x_rotation(accelX, accelY, accelZ);
         double Y_rotation = get_y_rotation(accelX, accelY, accelZ);
 
-        if (data == -1) {
-            printf("No data\n");
-            return -1;
-        }
     }
 }
 
@@ -303,7 +300,6 @@ int main (int argc, char *argv[]) {
     Dynamic_array *database = init_database_point();
     Array_of_Angles *database_angles =  init_database_angles();
 
-    int fd;
     wiringPiSetup () ;
     fd = wiringPiI2CSetup (0x68);  /*Use i2c detect command to find your respective device address*/
     if(fd==-1) {
