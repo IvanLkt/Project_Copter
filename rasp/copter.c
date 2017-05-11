@@ -251,7 +251,7 @@ void check_turn(Array_of_Angles *database_angles) {
             j++;
         }
         int turn = abs(tmp->angle + 450); // defolt -452
-        if (turn> 600) {
+        if (abs(tmp->angle) > 1500) {
             tmp_turn ++;
         }
     }
@@ -314,7 +314,7 @@ int main (int argc, char *argv[]) {
         while (status_of_flight == true) {
             get_data_from_MPU();
             printf("gyro%d:  \n", gyroX);
-            add_angle(database_angles, gyroX);
+            add_angle(database_angles, gyroX_out);
             if (database_angles->size > 5) {
                 delete_Angle(database_angles);
             }
