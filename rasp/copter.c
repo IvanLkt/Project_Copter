@@ -243,6 +243,7 @@ void get_data_from_MPU () {
 void check_turn(Array_of_Angles *database_angles) {
     int tmp_turn = 0;
     for (int i=0; i<5; i++) {
+        Angle *tmp = database_angles->head;
         int j = 0;
         while (j < i) {
             tmp = tmp->next;
