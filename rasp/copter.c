@@ -242,7 +242,7 @@ void get_data_from_MPU () {
 
 void check_turn(Array_of_Angles *database_angles) {
     int tmp_turn = 0;
-    for (int i=0; i<5; i++) {
+    for (int i=0; i < database_angles->size; i++) {
         Angle *tmp = database_angles->head;
         int j = 0;
         while (j < i) {
@@ -300,7 +300,7 @@ int main (int argc, char *argv[]) {
         return -1;
     }
     printf ("FINISH_SETUP\n");
-    
+
     while (digitalRead(COPT) == LOW);
 
     if (digitalRead(COPT) == HIGH){
@@ -313,10 +313,12 @@ int main (int argc, char *argv[]) {
         while (status_of_flight == true) {
             get_data_from_MPU();
             add_angle(database_angles, gyroX);
+            printf("POINT_2\n");
             if (database_angles->size > 5) {
                 delete_Angle(database_angles);
             }
             check_turn(database_angles);
+            printf("POINT_3\n");
             if (line > 0) {
                 real_time_clocks = clock();
                 real_time = real_time_clocks * 1000 / CLOCKS_PER_SEC;
@@ -325,14 +327,14 @@ int main (int argc, char *argv[]) {
                 double *Y;
                 get_coordinate(Input_Coordinates, real_time, start_line_time, U, X, Y);
                 add_point(database, *X, *Y, alt);
-                printf("POINT_2\n");
+                printf("POINT_4\n");
             }
             if (digitalRead(COPT) == LOW && start_time - real_time > 500) {
                 status_of_flight = false;
             }
         }
     }
-    printf("POINT_3\n");
+    printf("POINT_5\n");
     FILE *output_data;
     output_data = fopen ("output_data.txt", "w");
     Point *tmp = database->head;
