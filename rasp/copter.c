@@ -221,8 +221,10 @@ int read_value_i2c(int fd, int addres_register)
 
 void get_data_from_MPU () {
     wiringPiI2CWriteReg16(fd, 0x6b, 0x00); /*register 107 by datasheet -power management*/
+    printf("POWER_MPU_ON\n");
     for (;;) {
         data_MPU = wiringPiI2CRead(fd);
+        printf("DATA_MPU_ON\n");
         gyroX_out = read_value_i2c(fd, 0x43);
         gyroX = gyroX_out / 131;
         gyroY_out = read_value_i2c(fd, 0x45);
