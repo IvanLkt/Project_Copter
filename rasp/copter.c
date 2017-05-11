@@ -325,16 +325,18 @@ int main (int argc, char *argv[]) {
                 printf("POINT_4\n");
                 real_time_clocks = clock();
                 real_time = real_time_clocks * 1000 / CLOCKS_PER_SEC;
+                printf("POINT_5\n");
                 int alt = getCM();
                 double *X;
                 double *Y;
+                printf("POINT_6\n");
                 get_coordinate(Input_Coordinates, real_time, start_line_time, U, X, Y);
                 add_point(database, *X, *Y, alt);
-                printf("POINT_5\n");
+                printf("POINT_7\n");
             }
             if (digitalRead(COPT) == LOW && start_time - real_time > 500) {
                 status_of_flight = false;
-                printf("POINT_6\n");
+                printf("POINT_8\n");
             }
         }
     }
