@@ -8,11 +8,15 @@
 #include <wiringPiI2C.h>
 #include <stdint.h>
 
+#define COPT 1
+#define START 7
+
 int line = 0; //number of line in input file
 int quantity_coordinates = 0; //quantity of coordinates in input file
-clock_t real_time_clocks, start_line_time_clocks;
+clock_t real_time_clocks, start_line_time_clocks, start_time_clocks;
 long real_time;
 long start_line_time;
+long start_time;
 bool status_of_flight;
 bool status_of_turn; // 0 not turn; 1 - turn
 double U = 1.0;
@@ -243,8 +247,9 @@ void get_data_from_MPU () {
 void check_turn(Array_of_Angles *database_angles) {
     int tmp_turn = 0;
     for (int i=0; i<5; i++) {
-       Angle *tmp = getNth(database_angles, i);
-        if (tmp->angle > .....) {
+        Angle *tmp = getNth(database_angles, i);
+        int turn = abs(tmp->angle + 450); // defolt -452
+        if (turn> 600) {
             tmp_turn ++;
         }
     }
@@ -274,7 +279,15 @@ Angle* getNth(Array_of_Angles *database_angles, int index) {
     return tmp;
 }
 
+void setup_port() {
+    wiringPiSetup();
+    pinMode(COPT, INPUT);
+}
+
 int main (int argc, char *argv[]) {
+    setup_port();
+    while (digitalRead(START) == LOW);
+
     FILE *file;
     file = fopen("input.txt", "r");
     fscanf (file, "%d", &quantity_coordinates);
@@ -296,13 +309,17 @@ int main (int argc, char *argv[]) {
         return -1;
     }
 
-    if (...........){
+    while (digitalRead(COPT) == LOW);
+
+    if (digitalRead(COPT) == HIGH){
         setup_HCSR04();
+        start_time_clocks = clock();
+        start_time = start_time_clocks * 1000 / CLOCKS_PER_SEC;
         status_of_flight = true;
         line = 1;
         while (status_of_flight == true) {
             get_data_from_MPU();
-            add_angle(*database_angles, ......);
+            add_angle(*database_angles, gyroX);
             if (database_angles->size > 5) {
                 delete_Angle(*database_angles);
             }
@@ -316,9 +333,17 @@ int main (int argc, char *argv[]) {
                 get_coordinate(Input_Coordinates, real_time, start_line_time, U, X, Y);
                 add_point(database, *X, *Y, alt);
             }
-            if (......) {
+            if (digitalRead(COPT) == LOW && start_time - real_time > 5000) {
                 status_of_flight = false;
             }
         }
+    }
+
+    FILE *output_data;
+    output_data = fopen ("output_data.txt", "w");
+    Point *tmp = database->head;
+    for (int i = 0; i < database->size; i++) {
+        fprintf(output_data, "%lf      %lf      %d\n", tmp->data.x, tmp->data.y, tmp->data.z);
+        tmp = tmp->next;
     }
 }

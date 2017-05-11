@@ -5,13 +5,13 @@
 #define COPT 1
 
 
-void setup() {
+void setup_port() {
         wiringPiSetup();
         pinMode(COPT, INPUT);
 }
 
 int main(void) {
-  setup();
+  setup_port();
   if (digitalRead(COPT) == LOW) {
   printf ("LOW");
   }
