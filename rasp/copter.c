@@ -88,6 +88,7 @@ void get_coordinate (Ground *Input_Coordinates, long real_time, long start_line_
     double x, y; // local variables
     printf("%d\n", line);
     printf("%lf\n", Input_Coordinates[2*line-2].x);
+    printf("%lf\n", speed(Input_Coordinates, U));
     x = Input_Coordinates[2*line-2].x + (Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x)*(real_time - start_line_time)*speed(Input_Coordinates, U)*pow(sqrt(pow(Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x, 2) + pow(Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y, 2)), (-1));
     y = Input_Coordinates[2*line-2].y + (Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y)*(real_time - start_line_time)*speed(Input_Coordinates, U)*pow(sqrt(pow(Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x, 2) + pow(Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y, 2)), (-1));
     printf("POINT_12\n");
@@ -313,6 +314,7 @@ int main (int argc, char *argv[]) {
         start_time = start_time_clocks * 1000 / CLOCKS_PER_SEC;
         status_of_flight = true;
         line = 1;
+        start_line_time = real_time;
         printf("POINT_1\n");
         while (status_of_flight == true) {
             get_data_from_MPU();
