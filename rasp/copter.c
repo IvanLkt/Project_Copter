@@ -10,6 +10,8 @@
 
 #define COPT 1
 #define START 7
+#define TRIG 5
+#define ECHO 6
 
 int line = 0; //number of line in input file
 int quantity_coordinates = 0; //quantity of coordinates in input file
@@ -71,7 +73,7 @@ typedef struct Angle{
 }Angle;
 
 
-double speed (Groung *Input_Coordinates, U){
+double speed (Ground *Input_Coordinates, U){
     double x_1 = Input_Coordinates[0]->x; //широта
     double y_1 = Input_Coordinates[0]->y; //долгота
     double x_2 = Input_Coordinates[1]->x; //широта
@@ -81,7 +83,7 @@ double speed (Groung *Input_Coordinates, U){
     return U/k; //U - copter's speed
 }
 
-void get_coordinate (Groung *Input_Coordinates, long real_time, long start_line_time, double U, double *X, double *Y){
+void get_coordinate (Ground *Input_Coordinates, long real_time, long start_line_time, double U, double *X, double *Y){
     double x, y; // local variables
     x = Input_Coordinates[2*line-2]->x + (Input_Coordinates[2*line-1]->x - Input_Coordinates[2*line-2]->x)*(real_time - start_line_time)*speed(Input_Coordinates, U)*(sqrt((Input_Coordinates[2*line-1]->x - Input_Coordinates[2*line-2]->x)^2 + (Input_Coordinates[2*line-1]->y - Input_Coordinates[2*line-2]->y)^2))^(-1);
     y = Input_Coordinates[2*line-2]->y + (Input_Coordinates[2*line-1]->y - Input_Coordinates[2*line-2]->y)*(real_time - start_line_time)*speed(Input_Coordinates, U)*(sqrt((Input_Coordinates[2*line-1]->x - Input_Coordinates[2*line-2]->x)^2 + (Input_Coordinates[2*line-1]->y - Input_Coordinates[2*line-2]->y)^2))^(-1);
@@ -208,7 +210,7 @@ int read_value_i2c(int fd, int addres_register)
     }
 }
 
-int read_value(fd, addres_register)
+int read_value(int fd, addres_register)
 {
     int high = wiringPiI2CReadReg16(fd, addres_register);
     int low = wiringPiI2CReadReg16(fd, addres_register + 1);
