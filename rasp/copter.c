@@ -80,7 +80,7 @@ double speed (Ground *Input_Coordinates, double U){
     double x_2 = Input_Coordinates[1].x; //широта
     double y_2 = Input_Coordinates[1].y; //долгота
     double k =0; //coefficient
-    k = (40074000/360)*sin(arctg(abs(y_2-y_1)/abs(x_2-x_1)))+(40074000/360)*cos(x_1)*cos(arctg(abs(y_2-y_1)/abs(x_2-x_1))); // (metr/derges)
+    k = (40074000/360)*sin(atan(abs(y_2-y_1)/abs(x_2-x_1)))+(40074000/360)*cos(x_1)*cos(atan(abs(y_2-y_1)/abs(x_2-x_1))); // (metr/derges)
     return U/k; //U - copter's speed
 }
 
@@ -200,7 +200,7 @@ int getCM() {
 /*Data from GY-521*/
 int read_value_i2c(int fd, int addres_register)
 {
-    value = read_value(fd, addres_register);
+    int value = read_value(fd, addres_register);
     if (value >= 0x8000)
     {
         return -((65535 - value) + 1);
