@@ -88,7 +88,7 @@ double speed (Ground *Input_Coordinates){
     return U/k; //U - copter's speed
 }
 
-void get_coordinate (Ground *Input_Coordinates, long real_time, long start_line_time, double U, double *X, double *Y){
+void get_coordinate (Ground *Input_Coordinates, long real_time, long start_line_time, double *X, double *Y){
     double x, y; // local variables
     printf("%d\n", line);
     printf("%lf\n", Input_Coordinates[2*line-2].x);
@@ -339,7 +339,7 @@ int main (int argc, char *argv[]) {
                 double *X;
                 double *Y;
                 printf("POINT_6\n");
-                get_coordinate(Input_Coordinates, real_time, start_line_time, U, X, Y);
+                get_coordinate(Input_Coordinates, real_time, start_line_time, X, Y);
                 printf("POINT_7\n");
                 add_point(database, *X, *Y, alt);
                 printf("POINT_8\n");
