@@ -274,6 +274,7 @@ void check_turn(Array_of_Angles *database_angles) {
 void setup_port() {
     wiringPiSetup();
     pinMode(COPT, INPUT);
+    pinMode(START, INPUT);
 }
 
 int main (int argc, char *argv[]) {
