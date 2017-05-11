@@ -312,6 +312,7 @@ int main (int argc, char *argv[]) {
         printf("POINT_1\n");
         while (status_of_flight == true) {
             get_data_from_MPU();
+            printf("MPU_OK\n");
             add_angle(database_angles, gyroX);
             printf("POINT_2\n");
             if (database_angles->size > 5) {
