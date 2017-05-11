@@ -75,6 +75,7 @@ typedef struct Angle{
 
 
 double speed (Ground *Input_Coordinates, double U){
+    printf("POINT_15");
     double x_1 = Input_Coordinates[0].x; //широта
     double y_1 = Input_Coordinates[0].y; //долгота
     double x_2 = Input_Coordinates[1].x; //широта
@@ -82,15 +83,15 @@ double speed (Ground *Input_Coordinates, double U){
     double k =0; //coefficient
     printf("POINT_13");
     k = (40074000/360)*sin(atan(abs(y_2-y_1)/abs(x_2-x_1)))+(40074000/360)*cos(x_1)*cos(atan(abs(y_2-y_1)/abs(x_2-x_1))); // (metr/derges)
-    printf("POINT_14");
-    return U/k; //U - copter's speed
+    printf("%lf", U/k);
+    //return U/k; //U - copter's speed
 }
 
 void get_coordinate (Ground *Input_Coordinates, long real_time, long start_line_time, double U, double *X, double *Y){
     double x, y; // local variables
     printf("%d\n", line);
     printf("%lf\n", Input_Coordinates[2*line-2].x);
-    printf("%lf\n", speed(Input_Coordinates, U));
+    speed(Input_Coordinates, U);
     x = Input_Coordinates[2*line-2].x + (Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x)*(real_time - start_line_time)*speed(Input_Coordinates, U)*pow(sqrt(pow(Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x, 2) + pow(Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y, 2)), (-1));
     y = Input_Coordinates[2*line-2].y + (Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y)*(real_time - start_line_time)*speed(Input_Coordinates, U)*pow(sqrt(pow(Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x, 2) + pow(Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y, 2)), (-1));
     printf("POINT_12\n");
