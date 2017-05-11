@@ -86,6 +86,8 @@ double speed (Ground *Input_Coordinates, double U){
 
 void get_coordinate (Ground *Input_Coordinates, long real_time, long start_line_time, double U, double *X, double *Y){
     double x, y; // local variables
+    printf("%d\n", line);
+    printf("lf\n", Input_Coordinates[2*line-2].x);
     x = Input_Coordinates[2*line-2].x + (Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x)*(real_time - start_line_time)*speed(Input_Coordinates, U)*pow(sqrt(pow(Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x, 2) + pow(Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y, 2)), (-1));
     y = Input_Coordinates[2*line-2].y + (Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y)*(real_time - start_line_time)*speed(Input_Coordinates, U)*pow(sqrt(pow(Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x, 2) + pow(Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y, 2)), (-1));
     printf("POINT_12\n");
