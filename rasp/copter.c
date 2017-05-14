@@ -273,12 +273,12 @@ int check_turn(Array_of_Angles *database_angles, int *line, bool *status_of_turn
             j++;
         }
         int turn = abs(tmp->angle + 450); // defolt -452
-        if (abs(tmp->angle) > 1900) {
+        if (abs(tmp->angle) > 2000) {
             tmp_turn ++;
         }
     }
     if (status_of_turn == false && line > 0) {
-        if (tmp_turn == 10) {
+        if (tmp_turn == 30) {
             status_of_turn = true; //now at turn
             line = (-1)*line; // now at short line
         }
@@ -291,7 +291,7 @@ int check_turn(Array_of_Angles *database_angles, int *line, bool *status_of_turn
 	    return 0;
     }
     if (status_of_turn == false && line < 0) {
-        if (tmp_turn == 10) {
+        if (tmp_turn == 30) {
             status_of_turn = true;
             line = (-1)*line + 1; // long line
             clock_t start_line_time_clocks = clock();
@@ -345,9 +345,8 @@ int main (int argc, char *argv[]) {
         variables->start_line_time = variables->real_time;
         while (variables->status_of_flight == true) {
             get_data_from_MPU(IMU, variables->fd);
-            //printf("gyro%d:  \n", gyroX);
             add_angle(database_angles, IMU->gyroX_out);
-            if (database_angles->size > 10) {
+            if (database_angles->size > 30) {
                 delete_Angle(database_angles);
             }
             int code = check_turn(database_angles, &(variables->line), &(variables->status_of_turn), &(variables->start_line_time));
@@ -359,7 +358,7 @@ int main (int argc, char *argv[]) {
                 get_coordinate(Input_Coordinates, variables->real_time, variables->start_line_time, &X, &Y, variables->line);
                 add_point(database, X, Y, variables->alt);
             }
-            if (digitalRead(variables->COPT) == LOW && variables->start_time - variables->real_time > 500) {
+            if (digitalRead(variables->COPT) == LOW) {
                 variables->status_of_flight = false;
             }
         }
