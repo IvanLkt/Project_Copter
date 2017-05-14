@@ -256,21 +256,27 @@ int check_turn(Array_of_Angles *database_angles) {
             tmp_turn ++;
         }
     }
-    if (status_of_turn == false) {
+    if (status_of_turn == false && line > 0) {
         if (tmp_turn == 10) {
-            status_of_turn = true; //now short line
-            line = (-1)*line;
+            status_of_turn = true; //now at turn
+            line = (-1)*line; // now at short line
         }
-	return 0;
+	    return 0;
     }
     if (status_of_turn == true) {
+        if (tmp_turn == 0) {
+            status_of_turn = false; //turn is over
+        }
+	    return 0;
+    }
+    if (status_of_turn == false && line < 0) {
         if (tmp_turn == 10) {
-            status_of_turn = false; //now long line
-            line = (-1)*line + 1;
+            status_of_turn == true;
+            line = (-1)*line + 1; // long line
             start_line_time_clocks = clock();
             start_line_time = 1000.0 * (start_line_time_clocks) / CLOCKS_PER_SEC;
         }
-	return 0;
+        return 0;
     }
 }
 
