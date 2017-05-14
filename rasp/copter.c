@@ -278,10 +278,10 @@ int check_turn(Array_of_Angles *database_angles, int *line, bool *status_of_turn
             tmp_turn ++;
         }
     }
-    if (*status_of_turn == false && line > 0) {
+    if (*status_of_turn == false && *line > 0) {
         if (tmp_turn == 30) {
             *status_of_turn = true; //now at turn
-            *line = (-1)*(*line); // now at short line
+            *line = *line *(-1); // now at short line
         }
 	    return 0;
     }
@@ -291,10 +291,10 @@ int check_turn(Array_of_Angles *database_angles, int *line, bool *status_of_turn
         }
 	    return 0;
     }
-    if (*status_of_turn == false && line < 0) {
+    if (*status_of_turn == false && *line < 0) {
         if (tmp_turn == 30) {
             *status_of_turn = true;
-            *line = (-1)*(*line) + 1; // long line
+            *line = *line*(-1) + 1; // long line
             clock_t start_line_time_clocks = clock();
             *start_line_time = 1000.0 * (start_line_time_clocks) / CLOCKS_PER_SEC;
         }
@@ -362,7 +362,8 @@ int main (int argc, char *argv[]) {
             if (digitalRead(variables->COPT) == LOW) {
                 variables->status_of_flight = false;
             }
-	    printf("line:  %lf\n",variables->line);
+	    //printf("line:  %d\n",variables->line);
+	    printf("%ld\n", variables->real_time);
         }
     }
     FILE *output_data;
