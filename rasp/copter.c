@@ -80,7 +80,7 @@ typedef struct Angle{
 }Angle;
 
 
-double speed (Ground *Input_Coordinates){
+double speed (Ground *Input_Coordinates, double U){
     double x_1 = Input_Coordinates[0].x; //широта
     double y_1 = Input_Coordinates[0].y; //долгота
     double x_2 = Input_Coordinates[1].x; //широта
@@ -92,7 +92,8 @@ double speed (Ground *Input_Coordinates){
     return U/k; //U - copter's speed
 }
 
-void get_coordinate (Ground *Input_Coordinates, double real_time, double start_line_time, double *X, double *Y, int line){
+void get_coordinate (Ground *Input_Coordinates, double real_time, double start_line_time, double *X, double *Y, int line,
+                     double U){
     double x, y; // local variables
     x = Input_Coordinates[2*line-2].x + (Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x)*(((double)real_time - (double)start_line_time)/1000)*speed(Input_Coordinates)*pow(sqrt(pow(Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x, 2) + pow(Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y, 2)), (-1));
     y = Input_Coordinates[2*line-2].y + (Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y)*(((double)real_time - (double)start_line_time)/1000)*speed(Input_Coordinates)*pow(sqrt(pow(Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x, 2) + pow(Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y, 2)), (-1));
@@ -277,25 +278,25 @@ int check_turn(Array_of_Angles *database_angles, int *line, bool *status_of_turn
             tmp_turn ++;
         }
     }
-    if (status_of_turn == false && line > 0) {
+    if (*status_of_turn == false && line > 0) {
         if (tmp_turn == 30) {
-            status_of_turn = true; //now at turn
-            line = (-1)*line; // now at short line
+            *status_of_turn = true; //now at turn
+            *line = (-1)*(*line); // now at short line
         }
 	    return 0;
     }
-    if (status_of_turn == true) {
+    if (*status_of_turn == true) {
         if (tmp_turn == 0) {
-            status_of_turn = false; //turn is over
+            *status_of_turn = false; //turn is over
         }
 	    return 0;
     }
-    if (status_of_turn == false && line < 0) {
+    if (*status_of_turn == false && line < 0) {
         if (tmp_turn == 30) {
-            status_of_turn = true;
-            line = (-1)*line + 1; // long line
+            *status_of_turn = true;
+            *line = (-1)*(*line) + 1; // long line
             clock_t start_line_time_clocks = clock();
-            start_line_time = 1000.0 * (start_line_time_clocks) / CLOCKS_PER_SEC;
+            *start_line_time = 1000.0 * (start_line_time_clocks) / CLOCKS_PER_SEC;
         }
         return 0;
     }
@@ -355,7 +356,7 @@ int main (int argc, char *argv[]) {
                 variables->real_time = 1000.0 *(variables->real_time_clocks) / CLOCKS_PER_SEC;
                 variables->alt = getCM(variables->TRIG, variables->ECHO);
                 double X, Y;
-                get_coordinate(Input_Coordinates, variables->real_time, variables->start_line_time, &X, &Y, variables->line);
+                get_coordinate(Input_Coordinates, variables->real_time, variables->start_line_time, &X, &Y, variables->line, variables->U);
                 add_point(database, X, Y, variables->alt);
             }
             if (digitalRead(variables->COPT) == LOW) {
