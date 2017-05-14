@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
@@ -83,6 +84,8 @@ double speed (Ground *Input_Coordinates){
     double dist_metr = pow(pow((40074000/360)*fabs(y_2 - y_1)*cos(fabs((x_1 + x_2)/2)), 2) + pow(fabs(x_2 - x_1)*(40074000/360), 2), 0.5);
     double dist_deg = pow(pow(y_2 - y_1, 2) + pow(x_2 - x_1, 2), 0.5);
     k = dist_metr/dist_deg;// (metr/derges)
+    printf("k:%lf\n", k);
+    printf("U/k:%lf\n", U/k);
     return U/k; //U - copter's speed
 }
 
@@ -320,6 +323,7 @@ int main (int argc, char *argv[]) {
             }
             check_turn(database_angles);
             if (line > 0) {
+		printf("line:%d", line);
                 real_time_clocks = clock();
                 real_time = real_time_clocks * 1000 / CLOCKS_PER_SEC;
                 int alt = getCM();
