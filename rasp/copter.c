@@ -311,7 +311,7 @@ int main (int argc, char *argv[]) {
     if (digitalRead(COPT) == HIGH){
         setup_HCSR04();
         start_time_clocks = clock();
-        start_time = 1000* (start_time_clocks) / CLOCKS_PER_SEC;
+        start_time = 1000.0 * (start_time_clocks) / CLOCKS_PER_SEC;
         status_of_flight = true;
         line = 1;
         start_line_time = real_time;
@@ -325,7 +325,7 @@ int main (int argc, char *argv[]) {
             check_turn(database_angles);
             if (line > 0) {
                 real_time_clocks = clock();
-                real_time = 1000*(real_time_clocks)/CLOCKS_PER_SEC;
+                real_time = 1000.0 *(real_time_clocks) / CLOCKS_PER_SEC;
                 int alt = getCM();
                 double X, Y;
                 get_coordinate(Input_Coordinates, real_time, start_line_time, &X, &Y);
