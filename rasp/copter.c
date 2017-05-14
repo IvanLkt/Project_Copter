@@ -17,9 +17,9 @@
 int line = 0; //number of line in input file
 int quantity_coordinates = 0; //quantity of coordinates in input file
 clock_t real_time_clocks, start_line_time_clocks, start_time_clocks;
-double real_time;
-double start_line_time;
-double start_time;
+long real_time;
+long start_line_time;
+long start_time;
 bool status_of_flight;
 bool status_of_turn; // 0 not turn; 1 - turn
 double U = 1.0;
@@ -311,7 +311,7 @@ int main (int argc, char *argv[]) {
     if (digitalRead(COPT) == HIGH){
         setup_HCSR04();
         start_time_clocks = clock();
-        start_time = start_time_clocks * 1000 / CLOCKS_PER_SEC;
+        start_time = 1000* (start_time_clocks) / CLOCKS_PER_SEC;
         status_of_flight = true;
         line = 1;
         start_line_time = real_time;
@@ -325,7 +325,7 @@ int main (int argc, char *argv[]) {
             check_turn(database_angles);
             if (line > 0) {
                 real_time_clocks = clock();
-                real_time = real_time_clocks * 1000 / CLOCKS_PER_SEC;
+                real_time = 1000*(real_time_clocks)/CLOCKS_PER_SEC;
                 int alt = getCM();
                 double X, Y;
                 get_coordinate(Input_Coordinates, real_time, start_line_time, &X, &Y);
