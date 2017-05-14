@@ -255,7 +255,7 @@ void check_turn(Array_of_Angles *database_angles) {
             j++;
         }
         int turn = abs(tmp->angle + 450); // defolt -452
-        if (abs(tmp->angle) > 1500) {
+        if (abs(tmp->angle) > 1900) {
             tmp_turn ++;
         }
     }
@@ -270,7 +270,7 @@ void check_turn(Array_of_Angles *database_angles) {
             status_of_turn = false; //now long line
             line = (-1)*line + 1;
             start_line_time_clocks = clock();
-            start_line_time = start_line_time_clocks * 1000 / CLOCKS_PER_SEC;
+            start_line_time = 1000.0 * (start_line_time_clocks) / CLOCKS_PER_SEC;
         }
     }
 }
