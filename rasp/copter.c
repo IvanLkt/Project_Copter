@@ -17,9 +17,9 @@
 int line = 0; //number of line in input file
 int quantity_coordinates = 0; //quantity of coordinates in input file
 clock_t real_time_clocks, start_line_time_clocks, start_time_clocks;
-long real_time;
-long start_line_time;
-long start_time;
+double real_time;
+double start_line_time;
+double start_time;
 bool status_of_flight;
 bool status_of_turn; // 0 not turn; 1 - turn
 double U = 1.0;
@@ -84,13 +84,14 @@ double speed (Ground *Input_Coordinates){
     double dist_metr = pow(pow((40074000/360)*fabs(y_2 - y_1)*cos(fabs((x_1 + x_2)/2)), 2) + pow(fabs(x_2 - x_1)*(40074000/360), 2), 0.5);
     double dist_deg = pow(pow(y_2 - y_1, 2) + pow(x_2 - x_1, 2), 0.5);
     k = dist_metr/dist_deg;// (metr/derges)
-    printf("k:%lf\n", k);
-    printf("U/k:%lf\n", U/k);
     return U/k; //U - copter's speed
 }
 
-void get_coordinate (Ground *Input_Coordinates, long real_time, long start_line_time, double *X, double *Y){
+void get_coordinate (Ground *Input_Coordinates, double real_time, double start_line_time, double *X, double *Y){
     double x, y; // local variables
+    printf("real time: %lf\n", real_time);
+    printf("start time: %lf\n", start_line_time);
+    printf("%lf\n", ((double)real_time - (double)start_line_time)/1000);
     x = Input_Coordinates[2*line-2].x + (Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x)*(((double)real_time - (double)start_line_time)/1000)*speed(Input_Coordinates)*pow(sqrt(pow(Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x, 2) + pow(Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y, 2)), (-1));
     y = Input_Coordinates[2*line-2].y + (Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y)*(((double)real_time - (double)start_line_time)/1000)*speed(Input_Coordinates)*pow(sqrt(pow(Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x, 2) + pow(Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y, 2)), (-1));
     *X = x; // Link to an external variable
@@ -323,7 +324,6 @@ int main (int argc, char *argv[]) {
             }
             check_turn(database_angles);
             if (line > 0) {
-		printf("line:%d", line);
                 real_time_clocks = clock();
                 real_time = real_time_clocks * 1000 / CLOCKS_PER_SEC;
                 int alt = getCM();
