@@ -89,9 +89,6 @@ double speed (Ground *Input_Coordinates){
 
 void get_coordinate (Ground *Input_Coordinates, double real_time, double start_line_time, double *X, double *Y){
     double x, y; // local variables
-    printf("real time: %lf\n", real_time);
-    printf("start time: %lf\n", start_line_time);
-    printf("%lf\n", ((double)real_time - (double)start_line_time)/1000);
     x = Input_Coordinates[2*line-2].x + (Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x)*(((double)real_time - (double)start_line_time)/1000)*speed(Input_Coordinates)*pow(sqrt(pow(Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x, 2) + pow(Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y, 2)), (-1));
     y = Input_Coordinates[2*line-2].y + (Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y)*(((double)real_time - (double)start_line_time)/1000)*speed(Input_Coordinates)*pow(sqrt(pow(Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x, 2) + pow(Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y, 2)), (-1));
     *X = x; // Link to an external variable
@@ -245,7 +242,7 @@ void get_data_from_MPU () {
 }
 
 
-void check_turn(Array_of_Angles *database_angles) {
+int check_turn(Array_of_Angles *database_angles) {
     int tmp_turn = 0;
     for (int i=0; i < database_angles->size; i++) {
         Angle *tmp = database_angles->head;
@@ -260,18 +257,20 @@ void check_turn(Array_of_Angles *database_angles) {
         }
     }
     if (status_of_turn == false) {
-        if (tmp_turn == 5) {
+        if (tmp_turn == 10) {
             status_of_turn = true; //now short line
             line = (-1)*line;
         }
+	return 0;
     }
     if (status_of_turn == true) {
-        if (tmp_turn == 0) {
+        if (tmp_turn == 10) {
             status_of_turn = false; //now long line
             line = (-1)*line + 1;
             start_line_time_clocks = clock();
             start_line_time = 1000.0 * (start_line_time_clocks) / CLOCKS_PER_SEC;
         }
+	return 0;
     }
 }
 
@@ -317,12 +316,13 @@ int main (int argc, char *argv[]) {
         start_line_time = real_time;
         while (status_of_flight == true) {
             get_data_from_MPU();
-            printf("gyro%d:  \n", gyroX);
+            //printf("gyro%d:  \n", gyroX);
             add_angle(database_angles, gyroX_out);
-            if (database_angles->size > 5) {
+            if (database_angles->size > 10) {
                 delete_Angle(database_angles);
             }
-            check_turn(database_angles);
+            int code = check_turn(database_angles);
+	    printf("line: %d\n", line);
             if (line > 0) {
                 real_time_clocks = clock();
                 real_time = 1000.0 *(real_time_clocks) / CLOCKS_PER_SEC;
