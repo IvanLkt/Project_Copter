@@ -9,37 +9,42 @@
 #include <wiringPiI2C.h>
 #include <stdint.h>
 
-#define COPT 1
-#define START 7
-#define TRIG 5
-#define ECHO 6
+typedef struct Data {
+    int COPT;
+    int START;
+    int TRIG;
+    int ECHO;
 
-int line = 0; //number of line in input file
-int quantity_coordinates = 0; //quantity of coordinates in input file
-clock_t real_time_clocks, start_line_time_clocks, start_time_clocks;
-long real_time;
-long start_line_time;
-long start_time;
-bool status_of_flight;
-bool status_of_turn; // 0 not turn; 1 - turn
-double U = 1.0;
-int fd;
+    int line; //number of line in input file
+    int quantity_coordinates; //quantity of coordinates in input file
+    clock_t real_time_clocks, start_line_time_clocks, start_time_clocks;
+    long real_time;
+    long start_line_time;
+    long start_time;
+    bool status_of_flight;
+    bool status_of_turn; // 0 not turn; 1 - turn
+    double U;
+    int fd;
 
-/* IMU Data */
-int16_t tempRaw;
-int16_t gyroX;
-int16_t gyroY;
-int16_t gyroZ;
-double accelX;
-double accelY;
-double accelZ;
-int16_t gyroX_out;
-int16_t gyroY_out;
-int16_t gyroZ_out;
-int16_t accelX_out;
-int16_t accelY_out;
-int16_t accelZ_out;
-int data_MPU;
+    int alt;
+} Data;
+
+typedef struct IMU_Data {
+    int16_t tempRaw;
+    int16_t gyroX;
+    int16_t gyroY;
+    int16_t gyroZ;
+    double accelX;
+    double accelY;
+    double accelZ;
+    int16_t gyroX_out;
+    int16_t gyroY_out;
+    int16_t gyroZ_out;
+    int16_t accelX_out;
+    int16_t accelY_out;
+    int16_t accelZ_out;
+    int data_MPU;
+} IMU_Data;
 
 typedef struct Ground {
     double x,y;
@@ -87,7 +92,7 @@ double speed (Ground *Input_Coordinates){
     return U/k; //U - copter's speed
 }
 
-void get_coordinate (Ground *Input_Coordinates, double real_time, double start_line_time, double *X, double *Y){
+void get_coordinate (Ground *Input_Coordinates, double real_time, double start_line_time, double *X, double *Y, int line){
     double x, y; // local variables
     x = Input_Coordinates[2*line-2].x + (Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x)*(((double)real_time - (double)start_line_time)/1000)*speed(Input_Coordinates)*pow(sqrt(pow(Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x, 2) + pow(Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y, 2)), (-1));
     y = Input_Coordinates[2*line-2].y + (Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y)*(((double)real_time - (double)start_line_time)/1000)*speed(Input_Coordinates)*pow(sqrt(pow(Input_Coordinates[2*line-1].x - Input_Coordinates[2*line-2].x, 2) + pow(Input_Coordinates[2*line-1].y - Input_Coordinates[2*line-2].y, 2)), (-1));
@@ -135,6 +140,22 @@ Array_of_Angles* init_database_angles()
     return database_angles;
 }
 
+Data* init_variables () {
+    Data *variables = (Data *) malloc(sizeof(Data));
+    variables->COPT = 1;
+    variables->START = 7;
+    variables->TRIG = 5;
+    variables->ECHO = 6;
+    variables->U =1.0;
+    variables->line = 0;
+    variables->quantity_coordinates = 0;
+
+}
+
+IMU_Data* init_IMU () {
+    IMU_Data *IMU = (IMU_Data *) malloc(sizeof(IMU_Data));
+}
+
 void add_angle(Array_of_Angles *database_angles, int angle)
 {
     Angle *tmp = (Angle*) malloc(sizeof(Angle));
@@ -170,7 +191,7 @@ void delete_Angle(Array_of_Angles *database_angles)
 }
 
 /*Data from HC-SR04*/
-void setup_HCSR04() {
+void setup_HCSR04(int TRIG, int ECHO) {
     pinMode(TRIG, OUTPUT);
     pinMode(ECHO, INPUT);
 
@@ -179,7 +200,7 @@ void setup_HCSR04() {
     delay(30);
 }
 
-int getCM() {
+int getCM(int TRIG, int ECHO) {
     //Send trig pulse
     digitalWrite(TRIG, HIGH);
     delayMicroseconds(20);
@@ -222,27 +243,27 @@ int read_value_i2c(int fd, int addres_register)
 }
 
 
-void get_data_from_MPU () {
+void get_data_from_MPU (IMU_Data *IMU, int fd) {
     wiringPiI2CWriteReg16(fd, 0x6b, 0x00); /*register 107 by datasheet -power management*/
-        data_MPU = wiringPiI2CRead(fd);
-        gyroX_out = read_value_i2c(fd, 0x43);
-        gyroX = gyroX_out / 131;
-        gyroY_out = read_value_i2c(fd, 0x45);
-        gyroY = gyroY_out / 131;
-        gyroZ_out = read_value_i2c(fd, 0x47);
-        gyroZ = gyroZ_out / 131;
+        IMU->data_MPU = wiringPiI2CRead(fd);
+        IMU->gyroX_out = read_value_i2c(fd, 0x43);
+        IMU->gyroX = IMU->gyroX_out / 131;
+        IMU->gyroY_out = read_value_i2c(fd, 0x45);
+        IMU->gyroY =IMU-> gyroY_out / 131;
+        IMU->gyroZ_out = read_value_i2c(fd, 0x47);
+        IMU->gyroZ = IMU->gyroZ_out / 131;
 
-        accelX_out = read_value_i2c(fd, 0x3b);
-        accelX = (double) accelX_out / 16384.0;
-        accelY_out = read_value_i2c(fd, 0x3d);
-        accelY = (double) accelY_out / 16384.0;
-        accelZ_out = read_value_i2c(fd, 0x3f);
-        accelZ = (double) accelZ_out / 16384.0;
+        IMU->accelX_out = read_value_i2c(fd, 0x3b);
+        IMU->accelX = (double) IMU->accelX_out / 16384.0;
+        IMU->accelY_out = read_value_i2c(fd, 0x3d);
+        IMU->accelY = (double) IMU->accelY_out / 16384.0;
+        IMU->accelZ_out = read_value_i2c(fd, 0x3f);
+        IMU->accelZ = (double) IMU->accelZ_out / 16384.0;
 
 }
 
 
-int check_turn(Array_of_Angles *database_angles) {
+int check_turn(Array_of_Angles *database_angles, int *line, bool *status_of_turn, long *start_line_time) {
     int tmp_turn = 0;
     for (int i=0; i < database_angles->size; i++) {
         Angle *tmp = database_angles->head;
@@ -271,9 +292,9 @@ int check_turn(Array_of_Angles *database_angles) {
     }
     if (status_of_turn == false && line < 0) {
         if (tmp_turn == 10) {
-            status_of_turn == true;
+            status_of_turn = true;
             line = (-1)*line + 1; // long line
-            start_line_time_clocks = clock();
+            clock_t start_line_time_clocks = clock();
             start_line_time = 1000.0 * (start_line_time_clocks) / CLOCKS_PER_SEC;
         }
         return 0;
@@ -281,22 +302,24 @@ int check_turn(Array_of_Angles *database_angles) {
 }
 
 
-void setup_port() {
+void setup_port(int COPT, int START) {
     wiringPiSetup();
     pinMode(COPT, INPUT);
     pinMode(START, INPUT);
 }
 
 int main (int argc, char *argv[]) {
-    setup_port();
-    while (digitalRead(START) == LOW);
+    Data *variables = init_variables();
+    IMU_Data *IMU = init_IMU();
+    setup_port(variables->COPT, variables->START);
+    while (digitalRead(variables->START) == LOW);
     printf ("START_SETUP\n");
     FILE *file;
     file = fopen("input.txt", "r");
-    fscanf (file, "%d", &quantity_coordinates);
-    Ground Input_Coordinates[quantity_coordinates]; //array of coordinates from file
+    fscanf (file, "%d", &(variables->quantity_coordinates));
+    Ground Input_Coordinates[variables->quantity_coordinates]; //array of coordinates from file
 
-    for (int i = 0; i < quantity_coordinates; i++) {
+    for (int i = 0; i < variables->quantity_coordinates; i++) {
         fscanf(file, "%lf%lf", &(Input_Coordinates[i].x), &(Input_Coordinates[i].y));
         //printf("OK, %lf\n", Input_Coordinates[i].x);
     }
@@ -304,41 +327,40 @@ int main (int argc, char *argv[]) {
     Dynamic_array *database = init_database_point();
     Array_of_Angles *database_angles =  init_database_angles();
 
-    fd = wiringPiI2CSetup (0x68);  /*Use i2c detect command to find your respective device address*/
-    if(fd==-1) {
+    variables->fd = wiringPiI2CSetup (0x68);  /*Use i2c detect command to find your respective device address*/
+    if(variables->fd==-1) {
         printf("Can't setup the I2C device\n");
         return -1;
     }
     printf ("FINISH_SETUP\n");
 
-    while (digitalRead(COPT) == LOW);
+    while (digitalRead(variables->COPT) == LOW);
 
-    if (digitalRead(COPT) == HIGH){
-        setup_HCSR04();
-        start_time_clocks = clock();
-        start_time = 1000.0 * (start_time_clocks) / CLOCKS_PER_SEC;
-        status_of_flight = true;
-        line = 1;
-        start_line_time = real_time;
-        while (status_of_flight == true) {
-            get_data_from_MPU();
+    if (digitalRead(variables->COPT) == HIGH){
+        setup_HCSR04(variables->TRIG, variables->ECHO);
+        variables->start_time_clocks = clock();
+        variables->start_time = 1000.0 * (variables->start_time_clocks) / CLOCKS_PER_SEC;
+        variables->status_of_flight = true;
+        variables->line = 1;
+        variables->start_line_time = variables->real_time;
+        while (variables->status_of_flight == true) {
+            get_data_from_MPU(IMU, variables->fd);
             //printf("gyro%d:  \n", gyroX);
-            add_angle(database_angles, gyroX_out);
+            add_angle(database_angles, IMU->gyroX_out);
             if (database_angles->size > 10) {
                 delete_Angle(database_angles);
             }
-            int code = check_turn(database_angles);
-	    printf("line: %d\n", line);
-            if (line > 0) {
-                real_time_clocks = clock();
-                real_time = 1000.0 *(real_time_clocks) / CLOCKS_PER_SEC;
-                int alt = getCM();
+            int code = check_turn(database_angles, &(variables->line), &(variables->status_of_turn), &(variables->start_line_time));
+            if (variables->line > 0) {
+                variables->real_time_clocks = clock();
+                variables->real_time = 1000.0 *(variables->real_time_clocks) / CLOCKS_PER_SEC;
+                variables->alt = getCM(variables->TRIG, variables->ECHO);
                 double X, Y;
-                get_coordinate(Input_Coordinates, real_time, start_line_time, &X, &Y);
-                add_point(database, X, Y, alt);
+                get_coordinate(Input_Coordinates, variables->real_time, variables->start_line_time, &X, &Y, variables->line);
+                add_point(database, X, Y, variables->alt);
             }
-            if (digitalRead(COPT) == LOW && start_time - real_time > 500) {
-                status_of_flight = false;
+            if (digitalRead(variables->COPT) == LOW && variables->start_time - variables->real_time > 500) {
+                variables->status_of_flight = false;
             }
         }
     }
