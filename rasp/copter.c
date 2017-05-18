@@ -14,6 +14,9 @@ typedef struct Data {
     int START;
     int TRIG;
     int ECHO;
+    int LED_1;
+    int LED_2;
+    int LED_3;
 
     int line; //number of line in input file
     int quantity_coordinates; //quantity of coordinates in input file
@@ -147,6 +150,9 @@ Data* init_variables () {
     variables->START = 7;
     variables->TRIG = 5;
     variables->ECHO = 6;
+    variables->LED_1 = 23; // R
+    variables->LED_2 = 24; // G
+    variables->LED_3 = 25; // B 
     variables->U =1.0;
     variables->line = 0;
     variables->quantity_coordinates = 0;
@@ -303,16 +309,22 @@ int check_turn(Array_of_Angles *database_angles, int *line, bool *status_of_turn
 }
 
 
-void setup_port(int COPT, int START) {
+void setup_port(int COPT, int START, int LED_1, int LED_2, int LED_3) {
     wiringPiSetup();
     pinMode(COPT, INPUT);
     pinMode(START, INPUT);
+    pinMode(LED_1, OUTPUT);
+    pinMode(LED_2, OUTPUT);
+    pinMode(LED_3, OUTPUT);
 }
 
 int main (int argc, char *argv[]) {
     Data *variables = init_variables();
     IMU_Data *IMU = init_IMU();
-    setup_port(variables->COPT, variables->START);
+    setup_port(variables->COPT, variables->START, variables->LED_1, variables->LED_2, variables->LED_3);
+    digitalWrite(variables->LED_3, HIGH);
+    digitalWrite(variables->LED_1, LOW);
+    digitalWrite(variables->LED_2, LOW);
     while (digitalRead(variables->START) == LOW);
     printf ("START_SETUP\n");
     FILE *file;
@@ -338,6 +350,8 @@ int main (int argc, char *argv[]) {
     while (digitalRead(variables->COPT) == LOW);
 	printf("OK\n");
     if (digitalRead(variables->COPT) == HIGH){
+	digitalWrite(variables->LED_3, LOW);
+	digitalWrite(variables->LED_2, HIGH);
         setup_HCSR04(variables->TRIG, variables->ECHO);
         variables->start_time_clocks = clock();
         variables->start_time = 1000.0 * (variables->start_time_clocks) / CLOCKS_PER_SEC;
@@ -366,6 +380,8 @@ int main (int argc, char *argv[]) {
 	    printf("%ld\n", variables->real_time);
         }
     }
+    digitalWrite(variables->LED_2, LOW);
+    digitalWrite(variables->LED_1, HIGH);
     FILE *output_data;
     output_data = fopen ("output_data.txt", "w");
     Point *tmp = database->head;
