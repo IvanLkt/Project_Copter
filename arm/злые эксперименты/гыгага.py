@@ -8,7 +8,7 @@ file = open("data.txt", "r")
 data = [map(float, line.split("\t")) for line in file]
 
 def makeData():
-    (x,y,z) = (numpy.data[0::3],numpy.data[1::3],numpy.data[2::3])
+    (x,y,z) = (data[0::3],data[1::3],data[2::3])
     return x, y, z
 
 
