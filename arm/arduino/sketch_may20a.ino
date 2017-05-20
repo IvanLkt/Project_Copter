@@ -10,6 +10,7 @@ Kalman kalmanY;
 const uint64_t pipe = 0xE8E8F0F0E1LL; // адрес канала передачи
 RF24 radio(9,10);
 int msg2[2];
+int msg[3];
 
 uint8_t IMUAddress = 0x68;
 
@@ -53,15 +54,23 @@ void setup() {
     //============================================================Модуль NRF24
   radio.begin();                      // Включение модуля
   radio.setAutoAck(1);                // Установка режима подтверждения приема;
-  radio.setRetries(1,1);              // Установка интервала и количества попыток
   radio.setDataRate(RF24_250KBPS);    // Устанавливаем скорость
-  radio.setPALevel(RF24_PA_LOW);      // Установка максимальной мощности;
   radio.setChannel(10);               // Устанавливаем канал
-  radio.openWritingPipe(pipe);        // Открываем канал передачи
+  radio.openReadingPipe(1,pipe);      // Открываем 1 канал приема
+  radio.startListening();             // Начинаем слушать эфир
+  
 }
 
 void loop() {
-    
+  if (radio.available()){
+    while (radio.available()){
+      radio.read(&msg, sizeof(msg));
+      Serial.print(msg[0]);Serial.print("\t");
+      Serial.print(msg[1]);Serial.print("\t");
+      Serial.print(msg[2]);Serial.print("\t");
+      Serial.print("\n");
+    }
+  } 
   /* Update all the values (читаем с регистров в гироскопеи раскладывем по переменным)*/
   uint8_t* data = i2cRead(0x3B,14);    
   accX = ((data[0] << 8) | data[1]);
