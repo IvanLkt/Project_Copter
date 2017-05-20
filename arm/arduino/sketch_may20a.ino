@@ -9,7 +9,6 @@ Kalman kalmanY;
 
 const uint64_t pipe = 0xE8E8F0F0E1LL; // адрес канала передачи
 RF24 radio(9,10);
-int msg[3];
 int msg2[2];
 
 uint8_t IMUAddress = 0x68;
@@ -35,6 +34,7 @@ double kalAngleY;
 
 uint32_t timer;
 
+
 void setup() {  
   Serial.begin(115200);
   Wire.begin();  
@@ -49,6 +49,7 @@ void setup() {
   kalmanY.setAngle(180);
   timer = micros();
 
+
     //============================================================Модуль NRF24
   radio.begin();                      // Включение модуля
   radio.setAutoAck(1);                // Установка режима подтверждения приема;
@@ -60,7 +61,7 @@ void setup() {
 }
 
 void loop() {
-  
+    
   /* Update all the values (читаем с регистров в гироскопеи раскладывем по переменным)*/
   uint8_t* data = i2cRead(0x3B,14);    
   accX = ((data[0] << 8) | data[1]);
@@ -121,21 +122,17 @@ void loop() {
 
   msg2[0] = (int)kalAngleX;
   msg2[1] = (int)kalAngleY;
-  
-  radio.write(&msg, sizeof(msg));
 
+  Serial.print(msg2[0]);Serial.print("\t");
   Serial.print(msg2[1]);Serial.print("\t");
-  Serial.print(msg2[2]);Serial.print("\t");
   delay(50); // The accelerometer's maximum samples rate is 1kHz
 }
-
 void i2cWrite(uint8_t registerAddress, uint8_t data){
   Wire.beginTransmission(IMUAddress);
   Wire.write(registerAddress);
   Wire.write(data);
   Wire.endTransmission(); // Send stop
 }
-
 uint8_t* i2cRead(uint8_t registerAddress, uint8_t nbytes) {
   uint8_t data[nbytes];  
   Wire.beginTransmission(IMUAddress);
